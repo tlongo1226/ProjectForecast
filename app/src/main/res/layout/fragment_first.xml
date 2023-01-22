@@ -63,7 +63,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/ic_launcher_background"
         android:backgroundTint="#EC782A"
-        android:backgroundTintMode="src_over"
+        android:backgroundTintMode="src_in"
         android:foreground="@mipmap/ic_launcher"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
