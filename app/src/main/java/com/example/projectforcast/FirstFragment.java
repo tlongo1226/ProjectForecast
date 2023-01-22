@@ -32,8 +32,15 @@ public class FirstFragment extends Fragment {
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                String email = binding.editTextTextEmailAddress.getText().toString();
+                String password = binding.editTextTextPassword.getText().toString();
+                if(!email.isEmpty() && !password.isEmpty()){
+                    //TODO make call to remote to check email password
+                    if(true){
+                        NavHostFragment.findNavController(FirstFragment.this)
+                                .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    }
+                }
             }
         });
     }
