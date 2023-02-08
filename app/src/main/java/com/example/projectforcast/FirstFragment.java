@@ -19,7 +19,7 @@ import java.util.LinkedList;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
-
+    PrevDeviceListAdapter prevAdapter;
     private LinkedList<BluetoothDevice> pairedDeviceList = new LinkedList<>(MainActivity.getPairedDeviceList());
 
     @Override
@@ -28,8 +28,8 @@ public class FirstFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
-
-
+        prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList);
+        binding.prevDeviceRecycler.setAdapter(prevAdapter);
         return binding.getRoot();
     }
 

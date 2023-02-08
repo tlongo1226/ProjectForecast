@@ -1,4 +1,4 @@
 package com.example.projectforcast;
 
-public class PrevDeviceClass {
+public class ForecastScanner {
 }

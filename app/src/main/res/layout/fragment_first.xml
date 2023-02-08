@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView3"
+        android:id="@+id/prevDeviceRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -52,7 +52,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView4"
+        android:id="@+id/availDeviceRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -88,9 +88,9 @@
         android:layout_marginBottom="8dp"
         android:text="Previously Paired"
         android:textColor="#2C2C2C"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView3"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerView3"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView3" />
+        app:layout_constraintBottom_toTopOf="@+id/prevDeviceRecycler"
+        app:layout_constraintEnd_toEndOf="@+id/prevDeviceRecycler"
+        app:layout_constraintStart_toStartOf="@+id/prevDeviceRecycler" />
 
     <TextView
         android:id="@+id/textView3"
@@ -99,7 +99,7 @@
         android:layout_marginBottom="8dp"
         android:text="Available Devices"
         android:textColor="#2C2C2C"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView4"
-        app:layout_constraintEnd_toEndOf="@+id/recyclerView4"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView4" />
+        app:layout_constraintBottom_toTopOf="@+id/availDeviceRecycler"
+        app:layout_constraintEnd_toEndOf="@+id/availDeviceRecycler"
+        app:layout_constraintStart_toStartOf="@+id/availDeviceRecycler" />
 </androidx.constraintlayout.widget.ConstraintLayout>
