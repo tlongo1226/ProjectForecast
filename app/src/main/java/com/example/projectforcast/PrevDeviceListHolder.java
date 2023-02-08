@@ -1,5 +1,6 @@
 package com.example.projectforcast;
 
+import android.bluetooth.BluetoothDevice;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -14,7 +15,7 @@ public class PrevDeviceListHolder extends RecyclerView.ViewHolder{
         this.binding = rowBinding;
     }
 
-    public void bind(Object obj){
-
+    public void bind(BluetoothDevice bleDevice){
+        binding.setDevice(bleDevice);
     }
 }
