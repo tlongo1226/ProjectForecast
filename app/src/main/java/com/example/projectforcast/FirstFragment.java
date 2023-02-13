@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectforcast.databinding.FragmentFirstBinding;
@@ -33,6 +35,7 @@ public class FirstFragment extends Fragment {
     private BluetoothLeScanner forecastScanner;
     private AvailDeviceListAdapter availDeviceAdapter = new AvailDeviceListAdapter();
     private boolean scanning = false;
+    private boolean devConnected=false;
     private static final long SCAN_PERIOD = 10000;
     private ScanCallback forecastCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
@@ -61,6 +64,10 @@ public class FirstFragment extends Fragment {
         binding.scanStateButton.setOnClickListener(view -> {
             scanDevice();
         });
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.availDeviceRecycler.getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
+        binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
+
         return binding.getRoot();
     }
 
