@@ -5,16 +5,23 @@ import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -25,6 +32,7 @@ import com.example.projectforcast.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,23 +40,36 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     protected BluetoothManager bluetoothManager;
+    public BluetoothLeScanner bleScanner;
     BluetoothAdapter bluetoothAdapter;
     static Set<BluetoothDevice> pairedDeviceList;
+    int REQUEST_ENABLE_BT = 0;
+
 
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("Before Manager");
         bluetoothManager = getSystemService(BluetoothManager.class);
-        System.out.println("After Manager");
         bluetoothAdapter =bluetoothManager.getAdapter();
-        System.out.println("After Adapter");
+        if(bluetoothAdapter == null){
+            System.out.println("Device does not support Bluetooth");
+        }else {
+            if (!bluetoothAdapter.isEnabled()) {
+                System.out.println("Bluetooth is not enabled");
+                if(ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.BLUETOOTH)== PackageManager.PERMISSION_GRANTED){
+                    System.out.println("Bluetooth is already enabled");
+                }else{
+                    requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH);
+                }
 
-        System.out.println("Before Device List");
+            } else {
+                System.out.println("Bluetooth Enabled");
+            }
+        }
         pairedDeviceList = bluetoothAdapter.getBondedDevices();
-        System.out.println("After Device List");
-
+        bleScanner = bluetoothAdapter.getBluetoothLeScanner();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
@@ -87,7 +108,29 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+    public BluetoothLeScanner getBleScanner() {
+        return bleScanner;
+    }
+
+    public BluetoothAdapter getBluetoothAdapter() {
+        return bluetoothAdapter;
+    }
+
     public static Set<BluetoothDevice> getPairedDeviceList() {
         return pairedDeviceList;
     }
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    System.out.println("Permission granted");
+                } else {
+                    // Explain to the user that the feature is unavailable because the
+                    // feature requires a permission that the user has denied. At the
+                    // same time, respect the user's decision. Don't link to system
+                    // settings in an effort to convince the user to change their
+                    // decision.
+                    System.out.println("Permission denied");
+                }
+            });
 }
