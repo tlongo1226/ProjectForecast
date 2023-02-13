@@ -66,6 +66,7 @@ public class FirstFragment extends Fragment {
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.availDeviceRecycler.getContext(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
+        binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
         binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
 
         return binding.getRoot();
@@ -107,6 +108,8 @@ public class FirstFragment extends Fragment {
 
             forecastScanner.startScan(forecastCallback);
         }else{
+            scanning = false;
+            binding.scanStateButton.setText("Start\nScan");
             forecastScanner.stopScan(forecastCallback);
         }
     }
