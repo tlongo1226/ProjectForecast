@@ -14,7 +14,11 @@ import com.example.projectforcast.databinding.AvailDeviceRowBinding;
 import java.util.LinkedList;
 
 public class AvailDeviceListAdapter extends RecyclerView.Adapter {
-    LinkedList<BluetoothDevice> availDevices = new LinkedList<>();
+    public LinkedList<ForecastScanner> availDevices = new LinkedList<>();
+
+    public LinkedList<ForecastScanner> getAvailDevices(){
+        return availDevices;
+    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -24,11 +28,11 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        BluetoothDevice devToBind = availDevices.get(position);
-        ((AvailDeviceListHolder)holder).bind(devToBind);
+
+        ((AvailDeviceListHolder)holder).bind(availDevices.get(position));
     }
 
-    public void addForecastDevice(BluetoothDevice scanner){
+    public void addForecastDevice(ForecastScanner scanner){
         availDevices.add(scanner);
     }
 

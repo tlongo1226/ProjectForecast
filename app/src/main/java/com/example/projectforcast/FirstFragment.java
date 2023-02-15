@@ -42,7 +42,8 @@ public class FirstFragment extends Fragment {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            availDeviceAdapter.addForecastDevice(result.getDevice());
+            ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
+            availDeviceAdapter.addForecastDevice(newScanner);
             System.out.println("New Dev discovered: "+result.getDevice().getName());
             availDeviceAdapter.notifyDataSetChanged();
         }
@@ -59,6 +60,7 @@ public class FirstFragment extends Fragment {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList);
         forecastScanner = ((MainActivity) getActivity()).getBleScanner();
+
         binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
         binding.prevDeviceRecycler.setAdapter(prevAdapter);
         binding.scanStateButton.setOnClickListener(view -> {
@@ -105,7 +107,8 @@ public class FirstFragment extends Fragment {
                 binding.scanStateButton.setText("Start\nScan");
             }, SCAN_PERIOD);
             scanning = true;
-
+            availDeviceAdapter = new AvailDeviceListAdapter();
+            binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
             forecastScanner.startScan(forecastCallback);
         }else{
             scanning = false;

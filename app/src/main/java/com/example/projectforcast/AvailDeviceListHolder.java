@@ -15,7 +15,7 @@ public class AvailDeviceListHolder extends RecyclerView.ViewHolder{
         this.binding = rowBinding;
     }
 
-    public void bind(BluetoothDevice bleDev){
-        binding.setForecastScanner(bleDev);
+    public void bind(ForecastScanner scanner){
+        binding.setForecastScanner(scanner);
     }
 }
