@@ -1,7 +1,9 @@
 package com.example.projectforcast;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,10 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectforcast.databinding.AvailDeviceRowBinding;
 
+import java.io.IOException;
 import java.util.LinkedList;
 
 public class AvailDeviceListAdapter extends RecyclerView.Adapter {
     public LinkedList<ForecastScanner> availDevices = new LinkedList<>();
+    FirstFragment parent;
+
+    public AvailDeviceListAdapter(Context context, FirstFragment parentFragment){
+        this.parent = parentFragment;
+    }
 
     public LinkedList<ForecastScanner> getAvailDevices(){
         return availDevices;
@@ -30,6 +38,13 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         ((AvailDeviceListHolder)holder).bind(availDevices.get(position));
+        ((AvailDeviceListHolder)holder).binding.connectAvailDev.setOnClickListener(view -> {
+            try {
+                ((FirstFragment)parent).establishConn(availDevices.get(position).getBleDev());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void addForecastDevice(ForecastScanner scanner){

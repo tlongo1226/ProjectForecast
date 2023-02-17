@@ -2,19 +2,30 @@ package com.example.projectforcast;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Service;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothSocket;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
@@ -25,7 +36,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectforcast.databinding.FragmentFirstBinding;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
@@ -33,22 +50,91 @@ public class FirstFragment extends Fragment {
 
     private LinkedList<BluetoothDevice> pairedDeviceList = new LinkedList<>(MainActivity.getPairedDeviceList());
     private BluetoothLeScanner forecastScanner;
-    private AvailDeviceListAdapter availDeviceAdapter = new AvailDeviceListAdapter();
+    private AvailDeviceListAdapter availDeviceAdapter;
+    private BluetoothGatt forecastGatt;
+    BluetoothSocket forecastSocket;
+    OutputStream outputStream;
+    InputStream inputStream;
+    Thread workerThread;
+    byte[] readBuffer;
+    int readBufferPosition;
+    int counter;
     private boolean scanning = false;
-    private boolean devConnected=false;
+    private boolean devConnected = false;
+    volatile boolean stopWorker;
+
     private static final long SCAN_PERIOD = 10000;
     private ScanCallback forecastCallback = new ScanCallback() {
         @SuppressLint("MissingPermission")
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
-            ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
-            availDeviceAdapter.addForecastDevice(newScanner);
-            System.out.println("New Dev discovered: "+result.getDevice().getName());
-            availDeviceAdapter.notifyDataSetChanged();
+            //TODO remove scans for duplicates
+            if(result.getDevice().getName() != null) {
+                ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
+                availDeviceAdapter.addForecastDevice(newScanner);
+                System.out.println("New Dev discovered: " + result.getDevice().getName());
+
+                availDeviceAdapter.notifyDataSetChanged();
+            }
         }
 
 
+    };
+
+    private BluetoothGattCallback forecastGattCallback = new BluetoothGattCallback() {
+        @Override
+        public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+            super.onPhyUpdate(gatt, txPhy, rxPhy, status);
+            System.out.println("Top of phyUpdate");
+            System.out.println("TxPhy: " + txPhy);
+            System.out.println("rxPhy: " + rxPhy);
+            System.out.println("Status: " + status);
+
+        }
+
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState){
+            if(newState == BluetoothProfile.STATE_CONNECTED){
+                System.out.println("Connected");
+                forecastGatt = gatt;
+                forecastGatt.discoverServices();
+            }else{
+                System.out.println("Disconnected");
+            }
+        }
+
+        @Override
+        public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+            super.onServicesDiscovered(gatt, status);
+            List<BluetoothGattService> services= gatt.getServices();
+            if(services.isEmpty()){
+                System.out.println("EMPTY Service");
+            }else{
+                System.out.println("Length of services: "+services.size());
+                for(int i =0; i<services.size(); i++){
+                    System.out.print("UUID OF Service "+i+": ");
+                    BluetoothGattService service = services.get(i);
+                    String charID = String.valueOf(service.getUuid());
+                    System.out.println(charID);
+                    List<BluetoothGattCharacteristic> characters = service.getCharacteristics();
+                    if(characters.isEmpty()){
+                        System.out.println("EMPTY Characteristics");
+                    }else {
+                        System.out.println("Length of characteristics: " + characters.size());
+                        for (int j = 0; j < characters.size(); j++) {
+                            BluetoothGattCharacteristic currChar = characters.get(j);
+                            String charUUID = String.valueOf(currChar.getUuid());
+                            System.out.println("\tUUID of Char "+j+": " + charUUID);
+                            System.out.println("\t\tPermission int: "+currChar.getPermissions());
+
+                        }
+                    }
+
+                }
+            }
+        }
     };
     private Handler scanHandler = new Handler();
 
@@ -58,7 +144,8 @@ public class FirstFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
-        prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList);
+        availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
+        prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList, this);
         forecastScanner = ((MainActivity) getActivity()).getBleScanner();
 
         binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
@@ -70,7 +157,20 @@ public class FirstFragment extends Fragment {
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
         binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
         binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
-
+        binding.disconnectButton.setOnClickListener(view -> {
+            try {
+                closeBT();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        binding.sendDataButton.setOnClickListener(view -> {
+            try {
+                sendData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
         return binding.getRoot();
     }
 
@@ -107,15 +207,97 @@ public class FirstFragment extends Fragment {
                 binding.scanStateButton.setText("Start\nScan");
             }, SCAN_PERIOD);
             scanning = true;
-            availDeviceAdapter = new AvailDeviceListAdapter();
+            availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
             binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
             forecastScanner.startScan(forecastCallback);
-        }else{
+        } else {
             scanning = false;
             binding.scanStateButton.setText("Start\nScan");
             forecastScanner.stopScan(forecastCallback);
         }
     }
 
+    @SuppressLint("MissingPermission")
+    public void establishConn(BluetoothDevice desiredDev) throws IOException {
+        System.out.println("Inside the establishConn");
 
+        //ATTEMPT AT SERIAL COMM
+//        System.out.println("AFTER permission check");
+//        UUID uuid = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b"); //Standard SerialPortService ID
+//        forecastSocket = desiredDev.createRfcommSocketToServiceRecord(uuid);
+//        System.out.println("AFTER socket creation");
+//        forecastSocket.connect();
+//        System.out.println("AFTER socket connection");
+//        outputStream = forecastSocket.getOutputStream();
+//        inputStream = forecastSocket.getInputStream();
+//        System.out.println("AFTER getting streams");
+//        System.out.println("After socketing");
+//        listenForData();
+        forecastGatt = desiredDev.connectGatt(this.getContext(), true, forecastGattCallback);
+
+    }
+
+    void listenForData(){
+        final Handler handler = new Handler();
+        final byte delimiter = 10;
+        readBufferPosition = 0;
+        stopWorker=false;
+        readBuffer = new byte[1024];
+        System.out.println("INSIDE THE LISTEN FOR DATA");
+        workerThread = new Thread(() -> {
+            while(!Thread.currentThread().isInterrupted() && !stopWorker){
+                try
+                {
+                    int bytesAvailable = inputStream.available();
+                    if(bytesAvailable > 0)
+                    {
+                        byte[] packetBytes = new byte[bytesAvailable];
+                        inputStream.read(packetBytes);
+                        for(int i=0;i<bytesAvailable;i++)
+                        {
+                            byte b = packetBytes[i];
+                            if(b == delimiter)
+                            {
+                                byte[] encodedBytes = new byte[readBufferPosition];
+                                System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
+                                final String data = new String(encodedBytes, StandardCharsets.US_ASCII);
+                                readBufferPosition = 0;
+
+                                handler.post(new Runnable()
+                                {
+                                    public void run()
+                                    {
+                                        System.out.println("SENT DATA:\n\t" +data);
+
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                readBuffer[readBufferPosition++] = b;
+                            }
+                        }
+                    }
+                }
+                catch (IOException ex)
+                {
+                    stopWorker = true;
+                }
+            }
+        });
+        workerThread.start();
+    }
+
+    void sendData() throws IOException{
+
+
+    }
+
+    void closeBT() throws IOException{
+        stopWorker = true;
+        outputStream.close();
+        inputStream.close();
+        forecastSocket.close();
+        System.out.println("BLUETOOTH CLOSED");
+    }
 }
