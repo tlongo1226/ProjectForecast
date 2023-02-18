@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
@@ -119,7 +120,7 @@ public class FirstFragment extends Fragment {
             }else{
                 System.out.println("Length of services: "+services.size());
                 for(int i =0; i<services.size(); i++){
-                    System.out.print("UUID OF Service "+i+": ");
+                    System.out.print("UUID OF Service "+(i+1)+": ");
                     BluetoothGattService service = services.get(i);
                     String charID = String.valueOf(service.getUuid());
                     System.out.println(charID);
@@ -131,16 +132,23 @@ public class FirstFragment extends Fragment {
                         for (int j = 0; j < characters.size(); j++) {
                             BluetoothGattCharacteristic currChar = characters.get(j);
                             String charUUID = String.valueOf(currChar.getUuid());
-                            System.out.println("\tUUID of Char "+j+": " + charUUID);
-                            System.out.println("\t\tPermission int: "+currChar.getPermissions());
+                            System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
+
                             if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
                                 System.out.println("Found the char and enabling/reading it");
                                 gatt.setCharacteristicNotification(currChar,true);
-                                gatt.readCharacteristic(currChar);
-                                currChar.setValue("This is from the android dev");
-                                gatt.writeCharacteristic(currChar);
                             }
+                            List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
+                            for (int k =0; k<descriptors.size(); k++){
 
+                                BluetoothGattDescriptor currDescrip = descriptors.get(k);
+                                System.out.println("\t\tUUID of Descr " + (k + 1) +": "+ currDescrip.getUuid());
+                                if(String.valueOf(currDescrip.getUuid()).equals("00002902-0000-1000-8000-00805f9b34fb")){
+                                    currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                    gatt.writeDescriptor(currDescrip);
+                                }
+
+                            }
                         }
                     }
 
