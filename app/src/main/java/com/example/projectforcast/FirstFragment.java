@@ -40,8 +40,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.UUID;
 
 public class FirstFragment extends Fragment {
@@ -58,6 +60,11 @@ public class FirstFragment extends Fragment {
     Thread workerThread;
     byte[] readBuffer;
     int readBufferPosition;
+    UUID tempUuid = UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+
+
+    private Queue<Runnable> commandQueue;
+    private boolean commandQueueBusy;
     int counter;
     private boolean scanning = false;
     private boolean devConnected = false;
@@ -74,12 +81,9 @@ public class FirstFragment extends Fragment {
                 ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
                 availDeviceAdapter.addForecastDevice(newScanner);
                 System.out.println("New Dev discovered: " + result.getDevice().getName());
-
                 availDeviceAdapter.notifyDataSetChanged();
             }
         }
-
-
     };
 
     private BluetoothGattCallback forecastGattCallback = new BluetoothGattCallback() {
@@ -90,7 +94,6 @@ public class FirstFragment extends Fragment {
             System.out.println("TxPhy: " + txPhy);
             System.out.println("rxPhy: " + rxPhy);
             System.out.println("Status: " + status);
-
         }
 
         @SuppressLint("MissingPermission")
@@ -99,12 +102,14 @@ public class FirstFragment extends Fragment {
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 System.out.println("Connected");
                 forecastGatt = gatt;
+
                 forecastGatt.discoverServices();
             }else{
                 System.out.println("Disconnected");
             }
         }
 
+        @SuppressLint("MissingPermission")
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
@@ -128,12 +133,50 @@ public class FirstFragment extends Fragment {
                             String charUUID = String.valueOf(currChar.getUuid());
                             System.out.println("\tUUID of Char "+j+": " + charUUID);
                             System.out.println("\t\tPermission int: "+currChar.getPermissions());
+                            if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
+                                System.out.println("Found the char and enabling/reading it");
+                                gatt.setCharacteristicNotification(currChar,true);
+                                gatt.readCharacteristic(currChar);
+                                currChar.setValue("This is from the android dev");
+                                gatt.writeCharacteristic(currChar);
+                            }
 
                         }
                     }
 
                 }
             }
+        }
+
+        @Override
+        public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+            super.onMtuChanged(gatt, mtu, status);
+
+
+        }
+
+        @Override
+        public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
+            super.onCharacteristicRead(gatt, characteristic, value, status);
+            System.out.println("Inside characterisitc read");
+            if(status==BluetoothGatt.GATT_SUCCESS){
+                System.out.println("Characteristic Successful");
+                System.out.println("Value received: " + Arrays.toString(value));
+            }else{
+                System.out.println("Characteristic not successful");
+            }
+        }
+
+        @Override
+        public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+            super.onCharacteristicWrite(gatt, characteristic, status);
+            System.out.println("Inside the characteristic write");
+        }
+
+        @Override
+        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
+            super.onCharacteristicChanged(gatt, characteristic, value);
+            System.out.println("Char value changed: "+ Arrays.toString(value));
         }
     };
     private Handler scanHandler = new Handler();
@@ -233,7 +276,7 @@ public class FirstFragment extends Fragment {
 //        System.out.println("AFTER getting streams");
 //        System.out.println("After socketing");
 //        listenForData();
-        forecastGatt = desiredDev.connectGatt(this.getContext(), true, forecastGattCallback);
+        forecastGatt = desiredDev.connectGatt(this.getContext(), false, forecastGattCallback);
 
     }
 

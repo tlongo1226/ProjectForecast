@@ -97,9 +97,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
+            android:backgroundTint="#EC782A"
+            android:gravity="center|center_horizontal"
             android:text="connect"
+            app:cornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/macAddDisplay"
-            tools:layout_editor_absoluteX="132dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/macAddDisplay" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
