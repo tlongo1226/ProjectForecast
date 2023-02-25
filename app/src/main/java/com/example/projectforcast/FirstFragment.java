@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +62,12 @@ public class FirstFragment extends Fragment {
     Thread workerThread;
     byte[] readBuffer;
     int readBufferPosition;
-    UUID tempUuid = UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+    private static final UUID SERVICE_UUID =
+            UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+    private static final UUID CHARACTERISTIC_TX_UUID =
+            UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
+    private static final UUID CHARACTERISTIC_RX_UUID =
+            UUID.fromString("6E400003-B5A3-F393-E0A9-E50E24DCCA9E");
 
 
     private Queue<Runnable> commandQueue;
@@ -100,14 +106,17 @@ public class FirstFragment extends Fragment {
         @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState){
+            System.out.println("Status: "+status);
+            System.out.println("newState: "+newState);
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 System.out.println("Connected");
                 forecastGatt = gatt;
 
-                forecastGatt.discoverServices();
+                gatt.discoverServices();
             }else{
-                System.out.println("Disconnected");
+                System.out.println("Forecast scanner Disconnected");
             }
+
         }
 
         @SuppressLint("MissingPermission")
@@ -118,7 +127,7 @@ public class FirstFragment extends Fragment {
             if(services.isEmpty()){
                 System.out.println("EMPTY Service");
             }else{
-                System.out.println("Length of services: "+services.size());
+//                System.out.println("Length of services: "+services.size());
                 for(int i =0; i<services.size(); i++){
                     System.out.print("UUID OF Service "+(i+1)+": ");
                     BluetoothGattService service = services.get(i);
@@ -128,25 +137,17 @@ public class FirstFragment extends Fragment {
                     if(characters.isEmpty()){
                         System.out.println("EMPTY Characteristics");
                     }else {
-                        System.out.println("Length of characteristics: " + characters.size());
+//                        System.out.println("Length of characteristics: " + characters.size());
                         for (int j = 0; j < characters.size(); j++) {
                             BluetoothGattCharacteristic currChar = characters.get(j);
                             String charUUID = String.valueOf(currChar.getUuid());
                             System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
 
-                            if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
-                                System.out.println("Found the char and enabling/reading it");
-                                gatt.setCharacteristicNotification(currChar,true);
-                            }
                             List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
                             for (int k =0; k<descriptors.size(); k++){
 
                                 BluetoothGattDescriptor currDescrip = descriptors.get(k);
                                 System.out.println("\t\tUUID of Descr " + (k + 1) +": "+ currDescrip.getUuid());
-                                if(String.valueOf(currDescrip.getUuid()).equals("00002902-0000-1000-8000-00805f9b34fb")){
-                                    currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                    gatt.writeDescriptor(currDescrip);
-                                }
 
                             }
                         }
@@ -154,13 +155,31 @@ public class FirstFragment extends Fragment {
 
                 }
             }
+            BluetoothGattService service = gatt.getService(SERVICE_UUID);
+            BluetoothGattCharacteristic characteristic = service.getCharacteristic(CHARACTERISTIC_TX_UUID);
+
+            // Enable notifications for the characteristic
+
+            gatt.setCharacteristicNotification(characteristic, true);
+            System.out.println("Char Notifications Enabled");
+            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
+                    UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+//            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+//            gatt.writeDescriptor(descriptor);
+            System.out.println("Descriptor enable value written");
         }
 
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             super.onMtuChanged(gatt, mtu, status);
+        }
 
 
+
+        @Override
+        public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+            super.onDescriptorWrite(gatt, descriptor, status);
+            System.out.println("INSIDE DESCRIPTOR WRITE");
         }
 
         @Override
@@ -184,7 +203,11 @@ public class FirstFragment extends Fragment {
         @Override
         public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
             super.onCharacteristicChanged(gatt, characteristic, value);
-            System.out.println("Char value changed: "+ Arrays.toString(value));
+            String newVal = characteristic.getStringValue(0);
+            System.out.println("Char value in value param: "+ Arrays.toString(value));
+            System.out.println("Char value changed: "+ newVal);
+            Log.i("BLE CHAR", "Char value changed: "+ newVal);
+            Log.i("BLE CHAR", "Char value changed: "+ Arrays.toString(value));
         }
     };
     private Handler scanHandler = new Handler();
@@ -208,29 +231,11 @@ public class FirstFragment extends Fragment {
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
         binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
         binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
-        binding.disconnectButton.setOnClickListener(view -> {
-            try {
-                closeBT();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        binding.sendDataButton.setOnClickListener(view -> {
-            try {
-                sendData();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
         return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        binding.continueButton.setOnClickListener(view1 -> {
-
-        });
     }
 
     @Override
@@ -288,67 +293,5 @@ public class FirstFragment extends Fragment {
 
     }
 
-    void listenForData(){
-        final Handler handler = new Handler();
-        final byte delimiter = 10;
-        readBufferPosition = 0;
-        stopWorker=false;
-        readBuffer = new byte[1024];
-        System.out.println("INSIDE THE LISTEN FOR DATA");
-        workerThread = new Thread(() -> {
-            while(!Thread.currentThread().isInterrupted() && !stopWorker){
-                try
-                {
-                    int bytesAvailable = inputStream.available();
-                    if(bytesAvailable > 0)
-                    {
-                        byte[] packetBytes = new byte[bytesAvailable];
-                        inputStream.read(packetBytes);
-                        for(int i=0;i<bytesAvailable;i++)
-                        {
-                            byte b = packetBytes[i];
-                            if(b == delimiter)
-                            {
-                                byte[] encodedBytes = new byte[readBufferPosition];
-                                System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                final String data = new String(encodedBytes, StandardCharsets.US_ASCII);
-                                readBufferPosition = 0;
 
-                                handler.post(new Runnable()
-                                {
-                                    public void run()
-                                    {
-                                        System.out.println("SENT DATA:\n\t" +data);
-
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                readBuffer[readBufferPosition++] = b;
-                            }
-                        }
-                    }
-                }
-                catch (IOException ex)
-                {
-                    stopWorker = true;
-                }
-            }
-        });
-        workerThread.start();
-    }
-
-    void sendData() throws IOException{
-
-
-    }
-
-    void closeBT() throws IOException{
-        stopWorker = true;
-        outputStream.close();
-        inputStream.close();
-        forecastSocket.close();
-        System.out.println("BLUETOOTH CLOSED");
-    }
 }

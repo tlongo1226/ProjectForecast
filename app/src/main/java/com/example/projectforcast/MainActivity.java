@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -22,6 +23,7 @@ import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -34,7 +36,7 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.Set;
-
+//<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
@@ -43,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
     public BluetoothLeScanner bleScanner;
     BluetoothAdapter bluetoothAdapter;
     static Set<BluetoothDevice> pairedDeviceList;
+    public FloatingActionButton infoButton;
     int REQUEST_ENABLE_BT = 0;
-
-
+    ConnectInfoDialog connectInfoDialog;
+    DataInfoDialog dataInfoDialog;
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,10 +74,24 @@ public class MainActivity extends AppCompatActivity {
         pairedDeviceList = bluetoothAdapter.getBondedDevices();
         bleScanner = bluetoothAdapter.getBluetoothLeScanner();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+
+        dataInfoDialog = new DataInfoDialog(this);
+        connectInfoDialog = new ConnectInfoDialog(this);
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 
+        binding.getRoot().findViewById(R.id.informationButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getChildFragmentManager().getFragments().get(0);
+                if(currFrag instanceof FirstFragment){
+                    connectInfoDialog.show();
+                }else if(currFrag instanceof SecondFragment){
+                    dataInfoDialog.show();
+                }
+            }
+        });
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
     }
