@@ -147,18 +147,16 @@ public class FirstFragment extends Fragment {
 
                             if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
                                 System.out.println("Found the char and enabling/reading it");
-                                gatt.setCharacteristicNotification(currChar,true);
-                            }
-                            List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
-                            for (int k =0; k<descriptors.size(); k++){
-
-                                BluetoothGattDescriptor currDescrip = descriptors.get(k);
-                                System.out.println("\t\tUUID of Descr " + (k + 1) +": "+ currDescrip.getUuid());
-                                if(String.valueOf(currDescrip.getUuid()).equals("00002902-0000-1000-8000-00805f9b34fb")){
+//                                gatt.setCharacteristicNotification(currChar,true);
+//                                currChar.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                if (gatt.setCharacteristicNotification(currChar, true)) {
+                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
                                     currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                    gatt.writeDescriptor(currDescrip);
+                                    if (gatt.writeDescriptor(currDescrip)){
+                                        System.out.println("NOTIFICATIONS ENABLED");
+                                        gatt.readCharacteristic(currChar);
+                                    }
                                 }
-
                             }
                         }
                     }
@@ -170,14 +168,12 @@ public class FirstFragment extends Fragment {
         @Override
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             super.onMtuChanged(gatt, mtu, status);
-
-
         }
 
         @Override
         public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
             super.onCharacteristicRead(gatt, characteristic, value, status);
-            System.out.println("Inside characterisitc read");
+            System.out.println("Inside characteristic read");
             if(status==BluetoothGatt.GATT_SUCCESS){
                 System.out.println("Characteristic Successful");
                 System.out.println("Value received: " + Arrays.toString(value));
