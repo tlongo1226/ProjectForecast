@@ -24,6 +24,7 @@ import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -105,8 +106,18 @@ public class FirstFragment extends Fragment {
                 forecastGatt = gatt;
 
                 forecastGatt.discoverServices();
-            }else{
+            }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 System.out.println("Disconnected");
+            }
+            else {
+                if (status == 19) {
+                    System.out.println("ERROR CODE 19: DEVICE DISCONNECTED ITSELF ON PURPOSE");
+                } else if (status == 8) {
+                    System.out.println("ERROR CODE 8: CONNECTION TIMED OUT");
+                }
+                else {
+                    System.out.println("Error status: " + status + " specifics unknown - " + gatt.getDevice().getAddress());
+                }
             }
         }
 
@@ -181,12 +192,31 @@ public class FirstFragment extends Fragment {
             System.out.println("Inside the characteristic write");
         }
 
+//        @Override
+//        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
+//            super.onCharacteristicChanged(gatt, characteristic, value);
+//            System.out.println("Char value changed: "+ Arrays.toString(value));
+//        }
+
         @Override
-        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
-            super.onCharacteristicChanged(gatt, characteristic, value);
-            System.out.println("Char value changed: "+ Arrays.toString(value));
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicChanged(gatt, characteristic);
+            byte[] newValue = characteristic.getValue();
+            String newData = bytesToHex(newValue);
+            System.out.println("ORIGINAL: "+newData);
         }
     };
+
+    final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    final String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
     private Handler scanHandler = new Handler();
 
     @Override
