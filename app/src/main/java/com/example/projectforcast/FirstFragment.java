@@ -43,6 +43,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -62,6 +63,7 @@ public class FirstFragment extends Fragment {
     Thread workerThread;
     byte[] readBuffer;
     int readBufferPosition;
+    private HashSet<String> devAddresses = new HashSet<>();
     private static final UUID SERVICE_UUID =
             UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
     private static final UUID CHARACTERISTIC_TX_UUID =
@@ -84,11 +86,12 @@ public class FirstFragment extends Fragment {
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
             //TODO remove scans for duplicates
-            if(result.getDevice().getName() != null) {
+            BluetoothDevice newDev = result.getDevice();
+            if(!devAddresses.contains(newDev.getAddress())) {
                 ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
                 availDeviceAdapter.addForecastDevice(newScanner);
-                System.out.println("New Dev discovered: " + result.getDevice().getName());
                 availDeviceAdapter.notifyDataSetChanged();
+                devAddresses.add(newDev.getAddress());
             }
         }
     };
@@ -226,6 +229,10 @@ public class FirstFragment extends Fragment {
         binding.prevDeviceRecycler.setAdapter(prevAdapter);
         binding.scanStateButton.setOnClickListener(view -> {
             scanDevice();
+        });
+        binding.continueButton.setOnClickListener(v->{
+            NavHostFragment.findNavController(FirstFragment.this)
+                    .navigate(R.id.action_FirstFragment_to_SecondFragment);
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.availDeviceRecycler.getContext(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));

@@ -28,6 +28,5 @@
         android:scaleType="fitCenter"
         app:backgroundTint="#EC782A"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/information_icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

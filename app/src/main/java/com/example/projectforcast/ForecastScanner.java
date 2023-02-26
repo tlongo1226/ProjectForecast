@@ -33,7 +33,15 @@ public class ForecastScanner {
     }
 
     public String getName() {
-        return name;
+        if(name!=null){
+            if(!name.isEmpty()) {
+                return name;
+            }else{
+                return "N\\A";
+            }
+        }else{
+            return "N\\A";
+        }
     }
 
     public void setName(String name) {
