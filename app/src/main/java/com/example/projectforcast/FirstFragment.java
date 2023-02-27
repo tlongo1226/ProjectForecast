@@ -105,7 +105,7 @@ public class FirstFragment extends Fragment {
                 System.out.println("Connected");
                 forecastGatt = gatt;
 
-                forecastGatt.discoverServices();
+                gatt.discoverServices();
             }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 System.out.println("Disconnected");
             }
@@ -145,16 +145,24 @@ public class FirstFragment extends Fragment {
                             String charUUID = String.valueOf(currChar.getUuid());
                             System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
 
-                            if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
+                            if(charUUID.equalsIgnoreCase("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")){
                                 System.out.println("Found the char and enabling/reading it");
 //                                gatt.setCharacteristicNotification(currChar,true);
 //                                currChar.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+//                                gatt.setCharacteristicNotification(characteristic, true);
+//                                gatt.readCharacteristic(characteristic);
+
                                 if (gatt.setCharacteristicNotification(currChar, true)) {
+                                    System.out.println("Enables char notifications ");
+
+//
+//                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
                                     BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
                                     currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
                                     if (gatt.writeDescriptor(currDescrip)){
                                         System.out.println("NOTIFICATIONS ENABLED");
-                                        gatt.readCharacteristic(currChar);
+//                                        gatt.readCharacteristic(currChar);
+//
                                     }
                                 }
                             }
@@ -186,6 +194,13 @@ public class FirstFragment extends Fragment {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
             System.out.println("Inside the characteristic write");
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+
+                System.out.println("Write successful");
+                // Characteristic write successful
+            } else {
+                // Characteristic write unsuccessful
+            }
         }
 
 //        @Override
@@ -198,8 +213,9 @@ public class FirstFragment extends Fragment {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             byte[] newValue = characteristic.getValue();
-            String newData = bytesToHex(newValue);
-            System.out.println("ORIGINAL: "+newData);
+            System.out.println(Arrays.toString(newValue));
+//            String newData = bytesToHex(newValue);
+//            System.out.println("ORIGINAL: "+newData);
         }
     };
 
@@ -365,8 +381,12 @@ public class FirstFragment extends Fragment {
         workerThread.start();
     }
 
+    @SuppressLint("MissingPermission")
     void sendData() throws IOException{
-
+        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        byte[] valueToWrite = "Hello, ESP32!".getBytes();
+        characteristic.setValue(valueToWrite);
+        forecastGatt.writeCharacteristic(characteristic);
 
     }
 
