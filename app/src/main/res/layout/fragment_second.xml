@@ -14,7 +14,7 @@
         android:background="@drawable/title_background"
         android:paddingHorizontal="20dp"
         android:paddingVertical="16dp"
-        android:text="New Measurement"
+        android:text="New Measurement Page"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -190,7 +190,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/title_background"
         android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
@@ -199,17 +201,26 @@
 
         <TextView
             android:id="@+id/currPressureLabel"
-            android:layout_width="wrap_content"
+            android:text="Pressure:"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Pressure:" />
+            android:layout_weight="4"
+            android:paddingVertical="5dp"
+
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/currPressureVal"
-            android:layout_width="wrap_content"
+            android:text="N\\A"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="6"
+
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -218,7 +229,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/title_background"
+        android:backgroundTint="#423F3F"
         android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
@@ -227,17 +241,25 @@
 
         <TextView
             android:id="@+id/currHumidityLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Humidity:" />
+            android:layout_weight="4"
+            android:paddingVertical="5dp"
+            android:text="Humidity:"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/currHumidityVal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="6"
+
+            android:text="N\\A"
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -246,7 +268,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/title_background"
         android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
@@ -255,17 +279,25 @@
 
         <TextView
             android:id="@+id/currSkinLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
+            android:paddingVertical="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="34sp"
             android:text="Skin:" />
 
         <TextView
             android:id="@+id/currSkinVal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="6"
+
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:text="N\\A" />
     </LinearLayout>
 
     <LinearLayout
@@ -274,7 +306,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/title_background"
         android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
@@ -283,17 +317,39 @@
 
         <TextView
             android:id="@+id/currAmbLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="4"
+            android:paddingVertical="5dp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="34sp"
             android:text="Ambient:" />
 
         <TextView
             android:id="@+id/currAmbVal"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView" />
+            android:layout_weight="6"
+
+            android:textColor="@color/black"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:text="N\\A" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Under\nConstruction"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
+        app:layout_constraintEnd_toEndOf="@+id/locationGroup"
+        app:layout_constraintStart_toStartOf="@+id/locationGroup"
+        app:layout_constraintTop_toTopOf="@+id/locationGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
