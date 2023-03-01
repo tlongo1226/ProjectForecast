@@ -74,7 +74,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/pressureCheck"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -87,7 +87,7 @@
         android:text="Pressure"
 
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox2"
+        app:layout_constraintBottom_toTopOf="@+id/humidityCheck"
         app:layout_constraintEnd_toEndOf="@+id/paramGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/paramGroup"
@@ -95,7 +95,7 @@
         app:layout_constraintVertical_chainStyle="spread" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/humidityCheck"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -108,31 +108,30 @@
         android:padding="10dp"
         android:text="Humidity"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/checkBox3"
+        app:layout_constraintBottom_toTopOf="@+id/skinCheck"
         app:layout_constraintEnd_toEndOf="@+id/paramGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+        app:layout_constraintTop_toBottomOf="@+id/pressureCheck" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/skinCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@drawable/title_background"
-
         android:buttonTint="@color/white"
         android:padding="10dp"
         android:text="Skin"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="@+id/paramGroup"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox4"
+        app:layout_constraintEnd_toStartOf="@+id/ambientCheck"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+        app:layout_constraintTop_toBottomOf="@+id/humidityCheck" />
 
     <CheckBox
-        android:id="@+id/checkBox4"
+        android:id="@+id/ambientCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -145,8 +144,8 @@
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="@+id/paramGroup"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/checkBox3"
-        app:layout_constraintTop_toTopOf="@+id/checkBox3" />
+        app:layout_constraintStart_toEndOf="@+id/skinCheck"
+        app:layout_constraintTop_toTopOf="@+id/skinCheck" />
 
     <TextView
         android:id="@+id/parametersTitle"
@@ -185,15 +184,15 @@
         app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/pressureLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/title_background"
+        android:background="@drawable/en_dis_background"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintBottom_toTopOf="@+id/humidityLayout"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/currValueGroup"
@@ -201,11 +200,11 @@
 
         <TextView
             android:id="@+id/currPressureLabel"
-            android:text="Pressure:"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:paddingVertical="5dp"
+            android:text="Pressure:"
 
             android:textAlignment="center"
             android:textColor="@color/black"
@@ -213,31 +212,31 @@
 
         <TextView
             android:id="@+id/currPressureVal"
-            android:text="N\\A"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="6"
+            android:text="N\\A"
 
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="28sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/humidityLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/title_background"
-        android:backgroundTint="#423F3F"
+        android:background="@drawable/en_dis_background"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
+        app:layout_constraintBottom_toTopOf="@+id/skinLayout"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+        app:layout_constraintTop_toBottomOf="@+id/pressureLayout">
 
         <TextView
             android:id="@+id/currHumidityLabel"
@@ -257,25 +256,26 @@
             android:layout_weight="6"
 
             android:text="N\\A"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="28sp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/skinLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/title_background"
+        android:background="@drawable/en_dis_background"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintBottom_toTopOf="@+id/ambientLayout"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/humidityLayout">
 
         <TextView
             android:id="@+id/currSkinLabel"
@@ -283,10 +283,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:paddingVertical="5dp"
+            android:text="Skin:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="34sp"
-            android:text="Skin:" />
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/currSkinVal"
@@ -294,26 +294,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="6"
 
+            android:text="N\\A"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="28sp"
-            android:textStyle="bold"
-            android:text="N\\A" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/ambientLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/title_background"
+        android:background="@drawable/en_dis_background"
         android:orientation="horizontal"
         android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+        app:layout_constraintTop_toBottomOf="@+id/skinLayout">
 
         <TextView
             android:id="@+id/currAmbLabel"
@@ -321,10 +322,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:paddingVertical="5dp"
+            android:text="Ambient:"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="34sp"
-            android:text="Ambient:" />
+            android:textSize="34sp" />
 
         <TextView
             android:id="@+id/currAmbVal"
@@ -332,10 +333,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="6"
 
+            android:text="N\\A"
+            android:textAlignment="center"
             android:textColor="@color/black"
             android:textSize="28sp"
-            android:textStyle="bold"
-            android:text="N\\A" />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
