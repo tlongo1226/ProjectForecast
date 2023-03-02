@@ -38,7 +38,9 @@ public class PrevDeviceListAdapter extends RecyclerView.Adapter{
         ((PrevDeviceListHolder)holder).bind(deviceToBind);
         ((PrevDeviceListHolder)holder).binding.prevDevConnect.setOnClickListener(view -> {
             try {
-                ((FirstFragment)parent).establishConn(devices.get(position));
+                ForecastScanner tempScanner = new ForecastScanner(deviceToBind, 0);
+                tempScanner.setConnected(true);
+                ((FirstFragment)parent).establishConn(tempScanner);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

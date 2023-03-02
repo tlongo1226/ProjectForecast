@@ -55,6 +55,7 @@ public class FirstFragment extends Fragment {
 
     private LinkedList<BluetoothDevice> pairedDeviceList = new LinkedList<>(MainActivity.getPairedDeviceList());
     private BluetoothLeScanner forecastScanner;
+    private ForecastScanner forecastDevice;
     private AvailDeviceListAdapter availDeviceAdapter;
     private BluetoothGatt forecastGatt;
     BluetoothSocket forecastSocket;
@@ -114,11 +115,15 @@ public class FirstFragment extends Fragment {
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 System.out.println("Connected");
                 forecastGatt = gatt;
+                availDeviceAdapter.updateConnection(forecastDevice);
 
                 gatt.discoverServices();
-            }else{
+            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                forecastDevice=null;
+            }else {
                 System.out.println("Forecast scanner Disconnected");
             }
+
 
         }
 
@@ -281,7 +286,7 @@ public class FirstFragment extends Fragment {
     }
 
     @SuppressLint("MissingPermission")
-    public void establishConn(BluetoothDevice desiredDev) throws IOException {
+    public void establishConn(ForecastScanner desiredDev) throws IOException {
         System.out.println("Inside the establishConn");
 
         //ATTEMPT AT SERIAL COMM
@@ -296,8 +301,14 @@ public class FirstFragment extends Fragment {
 //        System.out.println("AFTER getting streams");
 //        System.out.println("After socketing");
 //        listenForData();
-        forecastGatt = desiredDev.connectGatt(this.getContext(), false, forecastGattCallback);
+        forecastGatt = desiredDev.getBleDev().connectGatt(this.getContext(), false, forecastGattCallback);
+        forecastDevice = desiredDev;
+    }
 
+    @SuppressLint("MissingPermission")
+    public void disconnect(){
+
+        forecastGatt.disconnect();
     }
 
 
