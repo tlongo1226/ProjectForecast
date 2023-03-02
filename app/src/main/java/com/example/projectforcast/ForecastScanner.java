@@ -3,7 +3,10 @@ package com.example.projectforcast;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 
-public class ForecastScanner {
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
+public class ForecastScanner extends BaseObservable {
     private int rssi=-1;
     private String address = "";
     private String name = "";
@@ -72,5 +75,14 @@ public class ForecastScanner {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+
+    public String getButtonText(){
+        if(connected){
+            return "Disconnect";
+        }else{
+            return "Connect";
+        }
     }
 }
