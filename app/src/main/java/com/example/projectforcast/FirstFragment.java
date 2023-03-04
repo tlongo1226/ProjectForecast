@@ -18,6 +18,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -342,6 +344,16 @@ public class FirstFragment extends Fragment {
 
         forecastGatt.disconnect();
     }
+
+    @BindingAdapter("app:dis_en_button")
+    public static void setButtonColor(Button button, boolean disabled){
+        if(disabled){
+            button.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+        }else{
+            button.setBackgroundColor(Color.parseColor("#EC782A"));
+        }
+    }
+
 
 
 }

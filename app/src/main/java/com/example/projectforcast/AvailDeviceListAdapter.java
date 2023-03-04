@@ -2,6 +2,7 @@ package com.example.projectforcast;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +20,39 @@ import java.util.LinkedList;
 public class AvailDeviceListAdapter extends RecyclerView.Adapter {
     public LinkedList<ForecastScanner> availDevices = new LinkedList<>();
     FirstFragment parent;
+    private Handler availDevHandler;
 
     public AvailDeviceListAdapter(Context context, FirstFragment parentFragment){
         this.parent = parentFragment;
+        availDevHandler = new Handler();
     }
 
     public void updateConnection(ForecastScanner scanner){
         int position = availDevices.indexOf(scanner);
         if (position >= 0) {
+            System.out.println("Inside the clicked button");
+            availDevices.get(position);
+            System.out.println("After position");
             availDevices.get(position).setConnected(true);
-            //notifyItemChanged(position);
+            System.out.println("After the boolean set");
+            System.out.println("after the notify");
 
         }
         int count=0;
         while(count<availDevices.size()){
             if(count!=position){
-                availDevices.get(position).setDisabled(true);
+                System.out.println("Inside the updateConn for non-clicked");
+                availDevices.get(count).setDisabled(true);
             }
+            count++;
         }
-        notifyDataSetChanged();
+        availDevHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     public LinkedList<ForecastScanner> getAvailDevices(){
@@ -59,6 +74,7 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
                 if(temp.isConnected()){
                     ((FirstFragment)parent).disconnect();
                     temp.setConnected(false);
+
                 }else{
                     ((FirstFragment)parent).establishConn(temp);
                     ((AvailDeviceListHolder) holder).binding.connectAvailDev.setText("Connecting...");
