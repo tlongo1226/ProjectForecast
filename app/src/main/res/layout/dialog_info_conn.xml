@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="300dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/sensorReadingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:text="Powering on/off"
+        app:layout_constraintStart_toStartOf="@+id/sensorReadingInfo"
+        app:layout_constraintTop_toBottomOf="@+id/DataRecordingDialogTitle" />
+
+    <TextView
+        android:id="@+id/sensorReadingInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="To turn on the Forecast scanner both buttons must be held down for 5 seconds. Upon turn on you should see the INSERT_COLOR LED flash twice quickly. To turn off the scanner the user must press the Green Button then the Red Button and hold for 5 seconds"
+        android:textStyle="bold"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:background="@drawable/recycler_background"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sensorReadingLabel" />
+
+    <TextView
+        android:id="@+id/dataRecordingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:text="Pairing Mode"
+        app:layout_constraintStart_toStartOf="@+id/dataRecordingInfo"
+        app:layout_constraintTop_toBottomOf="@+id/sensorReadingInfo" />
+
+    <TextView
+        android:id="@+id/dataRecordingInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/recycler_background"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:text="To initiate pairing mode the user must hold down the Green Button for 3 seconds. If done correctly the INSERT_COLOR LED will begin to flash once a second"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dataRecordingLabel" />
+
+    <TextView
+        android:id="@+id/connectionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:text="Connection"
+        app:layout_constraintStart_toStartOf="@+id/connectionInfo"
+        app:layout_constraintTop_toBottomOf="@+id/dataRecordingInfo" />
+
+    <TextView
+        android:id="@+id/connectionInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Too connect to a Forecast scanner one can interact with the scan button in the center of the screen. Upon discovering a device the user will be able to interact with to initialize connection and when it is established the Continue Button will Enable"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:background="@drawable/recycler_background"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/connectionLabel" />
+
+    <TextView
+        android:id="@+id/DataRecordingDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/title_background"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="Information Connection"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

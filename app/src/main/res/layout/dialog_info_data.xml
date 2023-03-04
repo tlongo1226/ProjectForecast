@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="360dp"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/sensorReadingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:text="Sensor Reading"
+        app:layout_constraintStart_toStartOf="@+id/sensorReadingInfo"
+        app:layout_constraintTop_toBottomOf="@+id/DataRecordingDialogTitle" />
+
+    <TextView
+        android:id="@+id/sensorReadingInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/recycler_background"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:text="To begin viewing the current values of the Forecast scanner sensors the user must press and hold the Red button. The user will be able to see the current values of the sensor on the android device.\n    Once the user has confirmed with the laser the sensor is aimed at the area they wish to test, pressing and releasing the Green button will record the values. Now the user can interact with this reading on the Android device."
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sensorReadingLabel" />
+
+    <TextView
+        android:id="@+id/dataRecordingLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:text="Data Recording"
+        app:layout_constraintStart_toStartOf="@+id/dataRecordingInfo"
+        app:layout_constraintTop_toBottomOf="@+id/sensorReadingInfo" />
+
+    <TextView
+        android:id="@+id/dataRecordingInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/recycler_background"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp"
+        android:text="Once the value has been recorded from the Forecast Scanner the user can decide to save or discard the recorded values. If the values are saved the user can assign a name and location/subject and the date time will automatically be saved with it."
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dataRecordingLabel" />
+
+    <TextView
+        android:id="@+id/DataRecordingDialogTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/title_background"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:text="Data Recording Information"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

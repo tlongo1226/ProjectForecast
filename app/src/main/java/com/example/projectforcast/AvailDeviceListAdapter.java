@@ -24,6 +24,22 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
         this.parent = parentFragment;
     }
 
+    public void updateConnection(ForecastScanner scanner){
+        int position = availDevices.indexOf(scanner);
+        if (position >= 0) {
+            availDevices.get(position).setConnected(true);
+            //notifyItemChanged(position);
+
+        }
+        int count=0;
+        while(count<availDevices.size()){
+            if(count!=position){
+                availDevices.get(position).setDisabled(true);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     public LinkedList<ForecastScanner> getAvailDevices(){
         return availDevices;
     }
@@ -36,11 +52,20 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-
-        ((AvailDeviceListHolder)holder).bind(availDevices.get(position));
+        ForecastScanner temp = availDevices.get(position);
+        ((AvailDeviceListHolder)holder).bind(temp);
         ((AvailDeviceListHolder)holder).binding.connectAvailDev.setOnClickListener(view -> {
             try {
-                ((FirstFragment)parent).establishConn(availDevices.get(position).getBleDev());
+                if(temp.isConnected()){
+                    ((FirstFragment)parent).disconnect();
+                    temp.setConnected(false);
+                }else{
+                    ((FirstFragment)parent).establishConn(temp);
+                    ((AvailDeviceListHolder) holder).binding.connectAvailDev.setText("Connecting...");
+
+                }
+
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

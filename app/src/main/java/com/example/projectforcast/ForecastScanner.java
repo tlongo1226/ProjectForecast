@@ -8,6 +8,8 @@ public class ForecastScanner {
     private String address = "";
     private String name = "";
     private BluetoothDevice bleDev;
+    private boolean connected = false;
+    private boolean disabled= false;
 
     @SuppressLint("MissingPermission")
     public ForecastScanner(BluetoothDevice newDev, int rssi){
@@ -33,7 +35,15 @@ public class ForecastScanner {
     }
 
     public String getName() {
-        return name;
+        if(name!=null){
+            if(!name.isEmpty()) {
+                return name;
+            }else{
+                return "N\\A";
+            }
+        }else{
+            return "N\\A";
+        }
     }
 
     public void setName(String name) {
@@ -46,5 +56,21 @@ public class ForecastScanner {
 
     public void setBleDev(BluetoothDevice bleDev) {
         this.bleDev = bleDev;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 }

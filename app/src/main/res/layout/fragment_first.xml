@@ -84,8 +84,6 @@
             android:layout_marginBottom="24dp"
             android:backgroundTint="#EC782A"
             android:text="Continue"
-
-            android:enabled="@{devConnected}"
             app:cornerRadius="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -113,26 +111,5 @@
             app:layout_constraintEnd_toEndOf="@+id/availDeviceRecycler"
             app:layout_constraintStart_toStartOf="@+id/availDeviceRecycler" />
 
-        <Button
-            android:id="@+id/disconnectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="disconnectBLE"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/continueButton"
-            app:layout_constraintHorizontal_bias="0.52"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/prevDeviceRecycler"
-            app:layout_constraintVertical_bias="0.541" />
-
-        <Button
-            android:id="@+id/sendDataButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="sendData"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/continueButton"
-            app:layout_constraintTop_toBottomOf="@+id/availDeviceRecycler" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
