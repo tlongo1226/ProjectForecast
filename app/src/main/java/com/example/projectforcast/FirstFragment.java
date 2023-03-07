@@ -158,26 +158,27 @@ public class FirstFragment extends Fragment {
                             String charUUID = String.valueOf(currChar.getUuid());
                             System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
 
-                            if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
+                            if(charUUID.equalsIgnoreCase("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")){
                                 System.out.println("Found the char and enabling/reading it");
                                 gatt.setCharacteristicNotification(currChar,true);
-                            }
-                            List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
-                            for (int k =0; k<descriptors.size(); k++){
+
+//                            List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
+//                            for (int k =0; k<descriptors.size(); k++) {
+//                                System.out.println(descriptors.get(k));
+//                            }
 
                                 if (gatt.setCharacteristicNotification(currChar, true)) {
                                     System.out.println("Enables char notifications ");
+                                }
 
 //
 //                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
-                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
-                                    currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                    if (gatt.writeDescriptor(currDescrip)){
-                                        System.out.println("NOTIFICATIONS ENABLED");
-//                                        gatt.readCharacteristic(currChar);
-//
-                                    }
+                                BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
+                                currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                if (gatt.writeDescriptor(currDescrip)){
+                                    System.out.println("NOTIFICATIONS ENABLED");
                                 }
+
                             }
                         }
                     }
@@ -275,7 +276,23 @@ public class FirstFragment extends Fragment {
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
         binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
         binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
+        binding.textView.setOnClickListener(view -> {
+            try {
+                sendData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    @SuppressLint("MissingPermission")
+    void sendData() throws IOException{
+        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        byte[] valueToWrite = "Hello, ESP32!".getBytes();
+        characteristic.setValue(valueToWrite);
+        forecastGatt.writeCharacteristic(characteristic);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
