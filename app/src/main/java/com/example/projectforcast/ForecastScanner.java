@@ -13,6 +13,10 @@ public class ForecastScanner extends BaseObservable {
     private BluetoothDevice bleDev;
     private boolean connected = false;
     private boolean disabled= false;
+    private String pressureVal;
+    private String humidityVal;
+    private String skinVal;
+    private String ambientVal;
 
     @SuppressLint("MissingPermission")
     public ForecastScanner(BluetoothDevice newDev, int rssi){
@@ -84,5 +88,37 @@ public class ForecastScanner extends BaseObservable {
         }else{
             return "Connect";
         }
+    }
+
+    public String getPressureVal() {
+        return pressureVal;
+    }
+
+    public void setPressureVal(String pressureVal) {
+        this.pressureVal = pressureVal;
+    }
+
+    public String getHumidityVal() {
+        return humidityVal;
+    }
+
+    public void setHumidityVal(String humidityVal) {
+        this.humidityVal = humidityVal;
+    }
+
+    public String getSkinVal() {
+        return skinVal;
+    }
+
+    public void setSkinVal(String skinVal) {
+        this.skinVal = skinVal;
+    }
+
+    public String getAmbientVal() {
+        return ambientVal;
+    }
+
+    public void setAmbientVal(String ambientVal) {
+        this.ambientVal = ambientVal;
     }
 }

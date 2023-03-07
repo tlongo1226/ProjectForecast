@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     int REQUEST_ENABLE_BT = 0;
     ConnectInfoDialog connectInfoDialog;
     DataInfoDialog dataInfoDialog;
+    FirstFragment firstFragment;
+    SecondFragment secondFragment;
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,4 +152,21 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println("Permission denied");
                 }
             });
+
+    public FirstFragment getFirstFragment() {
+        return firstFragment;
+    }
+
+    public void setFirstFragment(FirstFragment firstFragment) {
+        this.firstFragment = firstFragment;
+    }
+
+    public SecondFragment getSecondFragment() {
+        return secondFragment;
+    }
+
+    public void setSecondFragment(SecondFragment secondFragment) {
+        this.secondFragment = secondFragment;
+    }
 }
+

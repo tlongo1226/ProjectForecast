@@ -1,357 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".SecondFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/measurementPageTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/title_background"
-        android:paddingHorizontal="20dp"
-        android:paddingVertical="16dp"
-        android:text="New Measurement Page"
-        android:textColor="@color/white"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
+        <variable
+            name="scanner"
+            type="com.example.projectforcast.ForecastScanner" />
+    </data>
 
-    <View
-        android:id="@+id/paramGroup"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/recycler_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/currValueGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/currValuesTitle"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <View
-        android:id="@+id/currValueGroup"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-
-
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/recycler_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/locationGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/currValuesTitle"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <View
-        android:id="@+id/locationGroup"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/recycler_background"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/locationTitle"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <CheckBox
-        android:id="@+id/pressureCheck"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/title_background"
-        android:button="@null"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-        android:drawableTint="@color/white"
-        android:padding="10dp"
-        android:text="Pressure"
-
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/humidityCheck"
-        app:layout_constraintEnd_toEndOf="@+id/paramGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toTopOf="@+id/paramGroup"
-        app:layout_constraintVertical_chainStyle="spread" />
-
-    <CheckBox
-        android:id="@+id/humidityCheck"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_weight="1"
-        android:background="@drawable/title_background"
-        android:button="@null"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-        android:drawableTint="@color/white"
-        android:padding="10dp"
-        android:text="Humidity"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/skinCheck"
-        app:layout_constraintEnd_toEndOf="@+id/paramGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/pressureCheck" />
-
-    <CheckBox
-        android:id="@+id/skinCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/title_background"
-        android:buttonTint="@color/white"
-        android:padding="10dp"
-        android:text="Skin"
-        android:textSize="34sp"
-        app:layout_constraintBottom_toBottomOf="@+id/paramGroup"
-        app:layout_constraintEnd_toStartOf="@+id/ambientCheck"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/humidityCheck" />
-
-    <CheckBox
-        android:id="@+id/ambientCheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:background="@drawable/title_background"
-        android:button="@null"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-        android:drawableTint="@color/white"
-        android:padding="10dp"
-        android:text="Ambient"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="@+id/paramGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/skinCheck"
-        app:layout_constraintTop_toTopOf="@+id/skinCheck" />
-
-    <TextView
-        android:id="@+id/parametersTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Parameters"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/paramGroup"
-        app:layout_constraintStart_toStartOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
-
-    <TextView
-        android:id="@+id/locationTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Location"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/locationGroup"
-        app:layout_constraintStart_toStartOf="@+id/locationGroup"
-        app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
-
-    <TextView
-        android:id="@+id/currValuesTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Current Values"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
-        app:layout_constraintStart_toEndOf="@+id/paramGroup"
-        app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
-
-    <LinearLayout
-        android:id="@+id/pressureLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/en_dis_background"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/humidityLayout"
-        app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toTopOf="@+id/currValueGroup">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".SecondFragment">
 
         <TextView
-            android:id="@+id/currPressureLabel"
-            android:layout_width="match_parent"
+            android:id="@+id/measurementPageTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="5dp"
-            android:text="Pressure:"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/title_background"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            android:text="New Measurement Page"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp" />
+        <View
+            android:id="@+id/paramGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/recycler_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/currValueGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/currValuesTitle"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <View
+            android:id="@+id/currValueGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/recycler_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/locationGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/paramGroup"
+            app:layout_constraintTop_toBottomOf="@+id/currValuesTitle"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <View
+            android:id="@+id/locationGroup"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/recycler_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/currValueGroup"
+            app:layout_constraintTop_toBottomOf="@+id/locationTitle"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <CheckBox
+            android:id="@+id/pressureCheck"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/title_background"
+            android:button="@null"
+            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+            android:drawableTint="@color/white"
+            android:padding="10dp"
+            android:text="Pressure"
+
+            android:textSize="34sp"
+            app:layout_constraintBottom_toTopOf="@+id/humidityCheck"
+            app:layout_constraintEnd_toEndOf="@+id/paramGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/paramGroup"
+            app:layout_constraintTop_toTopOf="@+id/paramGroup"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <CheckBox
+            android:id="@+id/humidityCheck"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/title_background"
+            android:button="@null"
+            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+            android:drawableTint="@color/white"
+            android:padding="10dp"
+            android:text="Humidity"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toTopOf="@+id/skinCheck"
+            app:layout_constraintEnd_toEndOf="@+id/paramGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/paramGroup"
+            app:layout_constraintTop_toBottomOf="@+id/pressureCheck" />
+
+        <CheckBox
+            android:id="@+id/skinCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_background"
+            android:buttonTint="@color/white"
+            android:padding="10dp"
+            android:text="Skin"
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="@+id/paramGroup"
+            app:layout_constraintEnd_toStartOf="@+id/ambientCheck"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/paramGroup"
+            app:layout_constraintTop_toBottomOf="@+id/humidityCheck" />
+
+        <CheckBox
+            android:id="@+id/ambientCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/title_background"
+            android:button="@null"
+            android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+            android:drawableTint="@color/white"
+            android:padding="10dp"
+            android:text="Ambient"
+            android:textSize="34sp"
+            app:layout_constraintEnd_toEndOf="@+id/paramGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/skinCheck"
+            app:layout_constraintTop_toTopOf="@+id/skinCheck" />
 
         <TextView
-            android:id="@+id/currPressureVal"
-            android:layout_width="match_parent"
+            android:id="@+id/parametersTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:text="N\\A"
-
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/humidityLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/en_dis_background"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/skinLayout"
-        app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/pressureLayout">
+            android:layout_marginTop="8dp"
+            android:text="Parameters"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/paramGroup"
+            app:layout_constraintStart_toStartOf="@+id/paramGroup"
+            app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
 
         <TextView
-            android:id="@+id/currHumidityLabel"
-            android:layout_width="match_parent"
+            android:id="@+id/locationTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="5dp"
-            android:text="Humidity:"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp" />
+            android:layout_marginTop="8dp"
+            android:text="Location"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/locationGroup"
+            app:layout_constraintStart_toStartOf="@+id/locationGroup"
+            app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
 
         <TextView
-            android:id="@+id/currHumidityVal"
-            android:layout_width="match_parent"
+            android:id="@+id/currValuesTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="6"
+            android:layout_marginTop="8dp"
+            android:text="Current Values"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
+            app:layout_constraintStart_toEndOf="@+id/paramGroup"
+            app:layout_constraintTop_toBottomOf="@+id/measurementPageTitle" />
 
-            android:text="N\\A"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/pressureLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/en_dis_background"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/humidityLayout"
+            app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/currValueGroup"
+            app:layout_constraintTop_toTopOf="@+id/currValueGroup">
 
-    <LinearLayout
-        android:id="@+id/skinLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/en_dis_background"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/ambientLayout"
-        app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/humidityLayout">
+            <TextView
+                android:id="@+id/currPressureLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingVertical="5dp"
+                android:text="Pressure:"
+
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/currPressureVal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+                android:text="N\\A"
+
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/humidityLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/en_dis_background"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/skinLayout"
+            app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/currValueGroup"
+            app:layout_constraintTop_toBottomOf="@+id/pressureLayout">
+
+            <TextView
+                android:id="@+id/currHumidityLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingVertical="5dp"
+                android:text="Humidity:"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/currHumidityVal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+
+                android:text="N\\A"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/skinLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/en_dis_background"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/ambientLayout"
+            app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/currValueGroup"
+            app:layout_constraintTop_toBottomOf="@+id/humidityLayout">
+
+            <TextView
+                android:id="@+id/currSkinLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingVertical="5dp"
+                android:text="Skin:"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/currSkinVal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+
+                android:text="N\\A"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ambientLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/en_dis_background"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/currValueGroup"
+            app:layout_constraintTop_toBottomOf="@+id/skinLayout">
+
+            <TextView
+                android:id="@+id/currAmbLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:paddingVertical="5dp"
+                android:text="Ambient:"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="34sp" />
+
+            <TextView
+                android:id="@+id/currAmbVal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="6"
+
+                android:text="N\\A"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold" />
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/currSkinLabel"
-            android:layout_width="match_parent"
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="5dp"
-            android:text="Skin:"
+            android:text="Under\nConstruction"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="34sp" />
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
+            app:layout_constraintEnd_toEndOf="@+id/locationGroup"
+            app:layout_constraintStart_toStartOf="@+id/locationGroup"
+            app:layout_constraintTop_toTopOf="@+id/locationGroup" />
 
-        <TextView
-            android:id="@+id/currSkinVal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-
-            android:text="N\\A"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/ambientLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/en_dis_background"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/currValueGroup"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/currValueGroup"
-        app:layout_constraintTop_toBottomOf="@+id/skinLayout">
-
-        <TextView
-            android:id="@+id/currAmbLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="4"
-            android:paddingVertical="5dp"
-            android:text="Ambient:"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp" />
-
-        <TextView
-            android:id="@+id/currAmbVal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-
-            android:text="N\\A"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Under\nConstruction"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
-        app:layout_constraintEnd_toEndOf="@+id/locationGroup"
-        app:layout_constraintStart_toStartOf="@+id/locationGroup"
-        app:layout_constraintTop_toTopOf="@+id/locationGroup" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
