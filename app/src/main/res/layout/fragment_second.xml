@@ -213,7 +213,6 @@
                 android:layout_weight="4"
                 android:paddingVertical="5dp"
                 android:text="Pressure:"
-
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="34sp" />
@@ -223,8 +222,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
-                android:text="N\\A"
-
+                android:text="@{scanner.pressureVal}"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="28sp"
@@ -262,8 +260,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
-
-                android:text="N\\A"
+                android:text="@{scanner.humidityVal}"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="28sp"
@@ -302,7 +299,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
 
-                android:text="N\\A"
+                android:text="@{scanner.skinVal}"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="28sp"
@@ -341,7 +338,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="6"
 
-                android:text="N\\A"
+                android:text="@{scanner.ambientVal}"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="28sp"
@@ -357,6 +354,7 @@
             android:textColor="@color/black"
             android:textSize="34sp"
             android:textStyle="bold"
+
             app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
             app:layout_constraintEnd_toEndOf="@+id/locationGroup"
             app:layout_constraintStart_toStartOf="@+id/locationGroup"

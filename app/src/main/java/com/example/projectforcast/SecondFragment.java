@@ -21,8 +21,7 @@ import java.util.UUID;
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
-
-
+    private ForecastScanner scanner;
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -30,24 +29,28 @@ public class SecondFragment extends Fragment {
     ) {
 
         binding = FragmentSecondBinding.inflate(inflater, container, false);
+        scanner = ((MainActivity) getActivity()).getFirstFragment().getForecastDevice();
         ((MainActivity) getActivity()).getFirstFragment().getForecastGattCallback().setSecondBinding(binding);
-        binding.setScanner(((MainActivity) getActivity()).getFirstFragment().getForecastDevice());
+
+        binding.setScanner(scanner);
         binding.ambientCheck.setOnCheckedChangeListener((compoundButton, b) -> {
-            System.out.println("Ambient Check");
             binding.ambientLayout.setSelected(compoundButton.isChecked());
-            System.out.println("layoutSelected: "+binding.ambientLayout.isSelected());
+
            ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
         });
         binding.humidityCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.humidityLayout.setSelected(compoundButton.isChecked());
+
             ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
         });
         binding.skinCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.skinLayout.setSelected(compoundButton.isChecked());
+
             ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
         });
         binding.pressureCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.pressureLayout.setSelected(compoundButton.isChecked());
+
             ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
         });
 
@@ -64,22 +67,30 @@ public class SecondFragment extends Fragment {
         String params ="";
         if(binding.skinCheck.isChecked()){
             params= params+ "1,";
+            scanner.setSkinVal("N\\A");
         }else{
+            scanner.setSkinVal("OFF");
             params = params+"0,";
         }
         if(binding.ambientCheck.isChecked()){
             params= params+ "1,";
+            scanner.setAmbientVal("N\\A");
         }else{
+            scanner.setAmbientVal("OFF");
             params = params+"0,";
         }
         if(binding.humidityCheck.isChecked()){
             params= params+ "1,";
+            scanner.setHumidityVal("N\\A");
         }else{
+            scanner.setHumidityVal("OFF");
             params = params+"0,";
         }
         if(binding.pressureCheck.isChecked()){
             params= params+ "1";
+            scanner.setPressureVal("N\\A");
         }else{
+            scanner.setPressureVal("OFF");
             params = params+"0";
         }
         return params;

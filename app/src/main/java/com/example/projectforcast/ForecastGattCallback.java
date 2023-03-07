@@ -30,10 +30,18 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         forecastDevice = fScanner;
     }
 
+    @Override
+    public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+        super.onPhyUpdate(gatt, txPhy, rxPhy, status);
+        System.out.println("Top of phyUpdate");
+        System.out.println("TxPhy: " + txPhy);
+        System.out.println("rxPhy: " + rxPhy);
+        System.out.println("Status: " + status);
+    }
+
     @SuppressLint("MissingPermission")
     @Override
-    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        super.onConnectionStateChange(gatt, status, newState);
+    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState){
         System.out.println("Status: "+status);
         System.out.println("newState: "+newState);
         if(newState == BluetoothProfile.STATE_CONNECTED){
@@ -48,17 +56,10 @@ public class ForecastGattCallback extends BluetoothGattCallback {
             });
             gatt.discoverServices();
         }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-            System.out.println("Forecast scanner Disconnected");
-            ((AvailDeviceListAdapter)firstBinding.availDeviceRecycler.getAdapter()).disconnDevice(forecastDevice);
             forecastDevice=null;
             System.out.println("Disconnected");
-            callBackHandler.post(()->{
-                firstBinding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
-                firstBinding.continueButton.setEnabled(false);
-            });
         }
         else {
-            ((AvailDeviceListAdapter)firstBinding.availDeviceRecycler.getAdapter()).reenableDev(forecastDevice);
             if (status == 19) {
                 System.out.println("ERROR CODE 19: DEVICE DISCONNECTED ITSELF ON PURPOSE");
             } else if (status == 8) {
@@ -67,11 +68,6 @@ public class ForecastGattCallback extends BluetoothGattCallback {
             else {
                 System.out.println("Error status: " + status + " specifics unknown - " + gatt.getDevice().getAddress());
             }
-
-            callBackHandler.post(()->{
-                firstBinding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
-                firstBinding.continueButton.setEnabled(false);
-            });
         }
     }
 
@@ -98,49 +94,46 @@ public class ForecastGattCallback extends BluetoothGattCallback {
                         BluetoothGattCharacteristic currChar = characters.get(j);
                         String charUUID = String.valueOf(currChar.getUuid());
                         System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
-                        if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
+
+                        if(charUUID.equalsIgnoreCase("6E400003-B5A3-F393-E0A9-E50E24DCCA9E")){
                             System.out.println("Found the char and enabling/reading it");
                             gatt.setCharacteristicNotification(currChar,true);
-                        }
-                        List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
-                        for (int k =0; k<descriptors.size(); k++){
+
+//                            List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
+//                            for (int k =0; k<descriptors.size(); k++) {
+//                                System.out.println(descriptors.get(k));
+//                            }
 
                             if (gatt.setCharacteristicNotification(currChar, true)) {
                                 System.out.println("Enables char notifications ");
-//                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
-                                BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
-                                currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                                if (gatt.writeDescriptor(currDescrip)){
-                                    System.out.println("NOTIFICATIONS ENABLED");
-//                                        gatt.readCharacteristic(currChar);
-//
-                                }
                             }
+
+//
+//                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+                            BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
+                            currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            if (gatt.writeDescriptor(currDescrip)){
+                                System.out.println("NOTIFICATIONS ENABLED");
+                            }
+
                         }
                     }
                 }
-
             }
         }
     }
 
     @Override
-    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        super.onCharacteristicWrite(gatt, characteristic, status);
-        System.out.println("Inside the characteristic write");
-        if (status == BluetoothGatt.GATT_SUCCESS) {
-            System.out.println("Write successful");
-            // Characteristic write successful
-        } else {
-            // Characteristic write unsuccessful
-        }
+    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+        super.onMtuChanged(gatt, mtu, status);
     }
 
+
+
     @Override
-    public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
-        super.onCharacteristicChanged(gatt, characteristic, value);
-        byte[] newValue = characteristic.getValue();
-        System.out.println(Arrays.toString(newValue));
+    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+        super.onDescriptorWrite(gatt, descriptor, status);
+        System.out.println("INSIDE DESCRIPTOR WRITE");
     }
 
     @Override
@@ -153,6 +146,44 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         }else{
             System.out.println("Characteristic not successful");
         }
+    }
+
+    @Override
+    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+        super.onCharacteristicWrite(gatt, characteristic, status);
+        System.out.println("Inside the characteristic write");
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+
+            System.out.println("Write successful");
+            // Characteristic write successful
+        } else {
+            // Characteristic write unsuccessful
+        }
+    }
+
+//        @Override
+//        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
+//            super.onCharacteristicChanged(gatt, characteristic, value);
+//            System.out.println("Char value changed: "+ Arrays.toString(value));
+//        }
+
+    @Override
+    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+        super.onCharacteristicChanged(gatt, characteristic);
+        byte[] newValue = characteristic.getValue();
+        System.out.print("New value: ");
+        System.out.println(Arrays.toString(newValue));
+        StringBuilder builder = new StringBuilder();
+        for (byte b : newValue) {
+            builder.append((char) (b & 0xFF));
+        }
+        String message = builder.toString();
+        System.out.println(message);
+
+
+
+//            String newData = bytesToHex(newValue);
+//            System.out.println("ORIGINAL: "+newData);
     }
 
     public void setSecondBinding(FragmentSecondBinding secondBinding) {

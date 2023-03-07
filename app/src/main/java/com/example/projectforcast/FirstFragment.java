@@ -131,7 +131,25 @@ public class FirstFragment extends Fragment {
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
         binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
         binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
+
+        binding.textView.setOnClickListener(view -> {
+            try {
+                sendData();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
         return binding.getRoot();
+    }
+
+    @SuppressLint("MissingPermission")
+    void sendData() throws IOException{
+        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        byte[] valueToWrite = "Hello, ESP32!".getBytes();
+        characteristic.setValue(valueToWrite);
+        forecastGatt.writeCharacteristic(characteristic);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -161,6 +179,7 @@ public class FirstFragment extends Fragment {
                 scanning = false;
                 forecastScanner.stopScan(forecastCallback);
                 binding.scanStateButton.setText("Start\nScan");
+                devAddresses.clear();
             }, SCAN_PERIOD);
             scanning = true;
             availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
@@ -183,7 +202,6 @@ public class FirstFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     public void disconnect(){
-
         forecastGatt.disconnect();
     }
 
@@ -204,11 +222,12 @@ public class FirstFragment extends Fragment {
         return forecastGattCallback;
     }
 
-    @SuppressLint("MissingPermission")
+    @SuppressLint({"MissingPermission", "NewApi"})
     public void writeParams(String params){
         BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
         byte[] valueToWrite = params.getBytes();
         characteristic.setValue(valueToWrite);
+        System.out.println("In writeParams before the writeChar");
         forecastGatt.writeCharacteristic(characteristic);
     }
 
