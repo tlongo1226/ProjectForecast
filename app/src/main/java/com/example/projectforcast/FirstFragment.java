@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,7 @@ public class FirstFragment extends Fragment {
     private boolean commandQueueBusy;
     int counter;
     private boolean scanning = false;
+    private Handler continueHandler = new Handler();
     private boolean devConnected = false;
     volatile boolean stopWorker;
 
@@ -110,18 +112,37 @@ public class FirstFragment extends Fragment {
                 System.out.println("Connected");
                 forecastGatt = gatt;
                 availDeviceAdapter.connectDevice(forecastDevice);
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
+                   binding.continueButton.setEnabled(true);
+                });
                 gatt.discoverServices();
-            } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+            }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 System.out.println("Forecast scanner Disconnected");
                 availDeviceAdapter.disconnDevice(forecastDevice);
                 forecastDevice=null;
-            }else {
-                //Failed connection usually
-                System.out.println("Inside 133");
-                availDeviceAdapter.reenableDev(forecastDevice);
+                System.out.println("Disconnected");
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+                    binding.continueButton.setEnabled(false);
+                });
             }
+            else {
+                availDeviceAdapter.reenableDev(forecastDevice);
+                if (status == 19) {
+                    System.out.println("ERROR CODE 19: DEVICE DISCONNECTED ITSELF ON PURPOSE");
+                } else if (status == 8) {
+                    System.out.println("ERROR CODE 8: CONNECTION TIMED OUT");
+                }
+                else {
+                    System.out.println("Error status: " + status + " specifics unknown - " + gatt.getDevice().getAddress());
+                }
 
-
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+                    binding.continueButton.setEnabled(false);
+                });
+            }
         }
 
         @SuppressLint("MissingPermission")
@@ -148,30 +169,32 @@ public class FirstFragment extends Fragment {
                             String charUUID = String.valueOf(currChar.getUuid());
                             System.out.println("\tUUID of Char "+(j+1)+": " + charUUID);
 
+                            if(charUUID.equals("beb5483e-36e1-4688-b7f5-ea07361b26a8")){
+                                System.out.println("Found the char and enabling/reading it");
+                                gatt.setCharacteristicNotification(currChar,true);
+                            }
                             List<BluetoothGattDescriptor> descriptors = currChar.getDescriptors();
                             for (int k =0; k<descriptors.size(); k++){
 
-                                BluetoothGattDescriptor currDescrip = descriptors.get(k);
-                                System.out.println("\t\tUUID of Descr " + (k + 1) +": "+ currDescrip.getUuid());
+                                if (gatt.setCharacteristicNotification(currChar, true)) {
+                                    System.out.println("Enables char notifications ");
 
+//
+//                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
+                                    BluetoothGattDescriptor currDescrip = currChar.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")); //find the descriptors on the characteristic
+                                    currDescrip.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                                    if (gatt.writeDescriptor(currDescrip)){
+                                        System.out.println("NOTIFICATIONS ENABLED");
+//                                        gatt.readCharacteristic(currChar);
+//
+                                    }
+                                }
                             }
                         }
                     }
 
                 }
             }
-            BluetoothGattService service = gatt.getService(SERVICE_UUID);
-            BluetoothGattCharacteristic characteristic = service.getCharacteristic(CHARACTERISTIC_TX_UUID);
-
-            // Enable notifications for the characteristic
-
-            gatt.setCharacteristicNotification(characteristic, true);
-            System.out.println("Char Notifications Enabled");
-            BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                    UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"));
-//            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-//            gatt.writeDescriptor(descriptor);
-            System.out.println("Descriptor enable value written");
         }
 
         @Override
@@ -190,7 +213,7 @@ public class FirstFragment extends Fragment {
         @Override
         public void onCharacteristicRead(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value, int status) {
             super.onCharacteristicRead(gatt, characteristic, value, status);
-            System.out.println("Inside characterisitc read");
+            System.out.println("Inside characteristic read");
             if(status==BluetoothGatt.GATT_SUCCESS){
                 System.out.println("Characteristic Successful");
                 System.out.println("Value received: " + Arrays.toString(value));
@@ -203,18 +226,41 @@ public class FirstFragment extends Fragment {
         public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             super.onCharacteristicWrite(gatt, characteristic, status);
             System.out.println("Inside the characteristic write");
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+
+                System.out.println("Write successful");
+                // Characteristic write successful
+            } else {
+                // Characteristic write unsuccessful
+            }
         }
 
+//        @Override
+//        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
+//            super.onCharacteristicChanged(gatt, characteristic, value);
+//            System.out.println("Char value changed: "+ Arrays.toString(value));
+//        }
+
         @Override
-        public void onCharacteristicChanged(@NonNull BluetoothGatt gatt, @NonNull BluetoothGattCharacteristic characteristic, @NonNull byte[] value) {
-            super.onCharacteristicChanged(gatt, characteristic, value);
-            String newVal = characteristic.getStringValue(0);
-            System.out.println("Char value in value param: "+ Arrays.toString(value));
-            System.out.println("Char value changed: "+ newVal);
-            Log.i("BLE CHAR", "Char value changed: "+ newVal);
-            Log.i("BLE CHAR", "Char value changed: "+ Arrays.toString(value));
+        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+            super.onCharacteristicChanged(gatt, characteristic);
+            byte[] newValue = characteristic.getValue();
+            System.out.println(Arrays.toString(newValue));
+//            String newData = bytesToHex(newValue);
+//            System.out.println("ORIGINAL: "+newData);
         }
     };
+
+    final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+    final String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
     private Handler scanHandler = new Handler();
 
     @Override
@@ -232,7 +278,10 @@ public class FirstFragment extends Fragment {
         binding.scanStateButton.setOnClickListener(view -> {
             scanDevice();
         });
+        binding.continueButton.setEnabled(false);
+        binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
         binding.continueButton.setOnClickListener(v->{
+
             NavHostFragment.findNavController(FirstFragment.this)
                     .navigate(R.id.action_FirstFragment_to_SecondFragment);
         });
@@ -303,6 +352,7 @@ public class FirstFragment extends Fragment {
             button.setBackgroundColor(Color.parseColor("#EC782A"));
         }
     }
+
 
 
 
