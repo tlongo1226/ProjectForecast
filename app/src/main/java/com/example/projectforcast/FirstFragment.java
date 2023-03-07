@@ -2,26 +2,21 @@ package com.example.projectforcast;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Service;
-import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,21 +24,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.BindingAdapter;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectforcast.databinding.FragmentFirstBinding;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -117,13 +109,16 @@ public class FirstFragment extends Fragment {
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 System.out.println("Connected");
                 forecastGatt = gatt;
-                availDeviceAdapter.updateConnection(forecastDevice);
-
+                availDeviceAdapter.connectDevice(forecastDevice);
                 gatt.discoverServices();
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                System.out.println("Forecast scanner Disconnected");
+                availDeviceAdapter.disconnDevice(forecastDevice);
                 forecastDevice=null;
             }else {
-                System.out.println("Forecast scanner Disconnected");
+                //Failed connection usually
+                System.out.println("Inside 133");
+                availDeviceAdapter.reenableDev(forecastDevice);
             }
 
 
@@ -290,21 +285,8 @@ public class FirstFragment extends Fragment {
     @SuppressLint("MissingPermission")
     public void establishConn(ForecastScanner desiredDev) throws IOException {
         System.out.println("Inside the establishConn");
-
-        //ATTEMPT AT SERIAL COMM
-//        System.out.println("AFTER permission check");
-//        UUID uuid = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b"); //Standard SerialPortService ID
-//        forecastSocket = desiredDev.createRfcommSocketToServiceRecord(uuid);
-//        System.out.println("AFTER socket creation");
-//        forecastSocket.connect();
-//        System.out.println("AFTER socket connection");
-//        outputStream = forecastSocket.getOutputStream();
-//        inputStream = forecastSocket.getInputStream();
-//        System.out.println("AFTER getting streams");
-//        System.out.println("After socketing");
-//        listenForData();
-        forecastGatt = desiredDev.getBleDev().connectGatt(this.getContext(), false, forecastGattCallback);
         forecastDevice = desiredDev;
+        forecastGatt = desiredDev.getBleDev().connectGatt(this.getContext(), false, forecastGattCallback);
     }
 
     @SuppressLint("MissingPermission")
