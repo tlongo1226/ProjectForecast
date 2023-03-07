@@ -80,6 +80,7 @@ public class FirstFragment extends Fragment {
     private boolean commandQueueBusy;
     int counter;
     private boolean scanning = false;
+    private Handler continueHandler = new Handler();
     private boolean devConnected = false;
     volatile boolean stopWorker;
 
@@ -119,10 +120,18 @@ public class FirstFragment extends Fragment {
                 System.out.println("Connected");
                 forecastGatt = gatt;
                 availDeviceAdapter.updateConnection(forecastDevice);
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
+                   binding.continueButton.setEnabled(true);
+                });
                 gatt.discoverServices();
             }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 forecastDevice=null;
                 System.out.println("Disconnected");
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+                    binding.continueButton.setEnabled(false);
+                });
             }
             else {
                 if (status == 19) {
@@ -133,6 +142,11 @@ public class FirstFragment extends Fragment {
                 else {
                     System.out.println("Error status: " + status + " specifics unknown - " + gatt.getDevice().getAddress());
                 }
+
+                continueHandler.post(()->{
+                    binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+                    binding.continueButton.setEnabled(false);
+                });
             }
         }
 
@@ -269,7 +283,10 @@ public class FirstFragment extends Fragment {
         binding.scanStateButton.setOnClickListener(view -> {
             scanDevice();
         });
+        binding.continueButton.setEnabled(false);
+        binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
         binding.continueButton.setOnClickListener(v->{
+
             NavHostFragment.findNavController(FirstFragment.this)
                     .navigate(R.id.action_FirstFragment_to_SecondFragment);
         });
@@ -353,6 +370,7 @@ public class FirstFragment extends Fragment {
             button.setBackgroundColor(Color.parseColor("#EC782A"));
         }
     }
+
 
 
 
