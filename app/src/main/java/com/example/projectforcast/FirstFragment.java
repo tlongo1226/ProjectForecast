@@ -178,7 +178,9 @@ public class FirstFragment extends Fragment {
             scanHandler.postDelayed(() -> {
                 scanning = false;
                 forecastScanner.stopScan(forecastCallback);
-                binding.scanStateButton.setText("Start\nScan");
+                if(binding!=null) {
+                    binding.scanStateButton.setText("Start\nScan");
+                }
                 devAddresses.clear();
             }, SCAN_PERIOD);
             scanning = true;

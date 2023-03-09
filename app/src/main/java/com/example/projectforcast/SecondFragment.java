@@ -29,10 +29,9 @@ public class SecondFragment extends Fragment {
     ) {
 
         binding = FragmentSecondBinding.inflate(inflater, container, false);
-        scanner = ((MainActivity) getActivity()).getFirstFragment().getForecastDevice();
         ((MainActivity) getActivity()).getFirstFragment().getForecastGattCallback().setSecondBinding(binding);
 
-        binding.setScanner(scanner);
+        binding.setScanner(((MainActivity) getActivity()).getFirstFragment().getForecastDevice());
         binding.ambientCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.ambientLayout.setSelected(compoundButton.isChecked());
 
@@ -67,30 +66,39 @@ public class SecondFragment extends Fragment {
         String params ="";
         if(binding.skinCheck.isChecked()){
             params= params+ "1,";
-            scanner.setSkinVal("N\\A");
+            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getSkinVal().equals("off")) {
+                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setSkinVal("N\\A");
+            }
         }else{
-            scanner.setSkinVal("OFF");
+
+            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setSkinVal("off");
             params = params+"0,";
         }
         if(binding.ambientCheck.isChecked()){
             params= params+ "1,";
-            scanner.setAmbientVal("N\\A");
+            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getAmbientVal().equals("off")) {
+                    ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setAmbientVal("N\\A");
+                }
         }else{
-            scanner.setAmbientVal("OFF");
+            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setAmbientVal("off");
             params = params+"0,";
         }
         if(binding.humidityCheck.isChecked()){
             params= params+ "1,";
-            scanner.setHumidityVal("N\\A");
+            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getHumidityVal().equals("off")) {
+                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setHumidityVal("N\\A");
+            }
         }else{
-            scanner.setHumidityVal("OFF");
+            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setHumidityVal("off");
             params = params+"0,";
         }
         if(binding.pressureCheck.isChecked()){
             params= params+ "1";
-            scanner.setPressureVal("N\\A");
+            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getPressureVal().equals("off")) {
+                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setPressureVal("N\\A");
+            }
         }else{
-            scanner.setPressureVal("OFF");
+            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setPressureVal("off");
             params = params+"0";
         }
         return params;

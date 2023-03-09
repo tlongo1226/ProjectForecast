@@ -172,12 +172,18 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         super.onCharacteristicChanged(gatt, characteristic);
         byte[] newValue = characteristic.getValue();
         System.out.print("New value: ");
-        System.out.println(Arrays.toString(newValue));
+//        System.out.println(Arrays.toString(newValue));
         StringBuilder builder = new StringBuilder();
         for (byte b : newValue) {
             builder.append((char) (b & 0xFF));
         }
+
         String message = builder.toString();
+        String[] newValues = message.split(",");
+        forecastDevice.setSkinVal(newValues[0]);
+        forecastDevice.setAmbientVal(newValues[1]);
+        forecastDevice.setHumidityVal(newValues[2]);
+        forecastDevice.setPressureVal(newValues[3]);
         System.out.println(message);
 
 

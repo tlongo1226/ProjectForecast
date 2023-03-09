@@ -212,10 +212,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:paddingVertical="5dp"
-                android:text="Pressure:"
+                android:singleLine="false"
+                android:text="Pressure (Pa):"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/currPressureVal"
@@ -250,10 +251,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:paddingVertical="5dp"
-                android:text="Humidity:"
+                android:text="Humidity (%):"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/currHumidityVal"
@@ -288,10 +289,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:paddingVertical="5dp"
-                android:text="Skin:"
+                android:text="Skin (C):"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/currSkinVal"
@@ -327,10 +328,10 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="4"
                 android:paddingVertical="5dp"
-                android:text="Ambient:"
+                android:text="Ambient (C):"
                 android:textAlignment="center"
                 android:textColor="@color/black"
-                android:textSize="34sp" />
+                android:textSize="30sp" />
 
             <TextView
                 android:id="@+id/currAmbVal"
