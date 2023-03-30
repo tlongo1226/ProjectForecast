@@ -35,6 +35,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 //<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
 public class MainActivity extends AppCompatActivity {
@@ -51,21 +52,22 @@ public class MainActivity extends AppCompatActivity {
     DataInfoDialog dataInfoDialog;
     FirstFragment firstFragment;
     SecondFragment secondFragment;
+
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bluetoothManager = getSystemService(BluetoothManager.class);
-        bluetoothAdapter =bluetoothManager.getAdapter();
-        if(bluetoothAdapter == null){
+        bluetoothAdapter = bluetoothManager.getAdapter();
+        if (bluetoothAdapter == null) {
             System.out.println("Device does not support Bluetooth");
-        }else {
+        } else {
             if (!bluetoothAdapter.isEnabled()) {
                 System.out.println("Bluetooth is not enabled");
-                if(ContextCompat.checkSelfPermission(
-                        this, Manifest.permission.BLUETOOTH)== PackageManager.PERMISSION_GRANTED){
+                if (ContextCompat.checkSelfPermission(
+                        this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED) {
                     System.out.println("Bluetooth is already enabled");
-                }else{
+                } else {
                     requestPermissionLauncher.launch(Manifest.permission.BLUETOOTH);
                 }
 
@@ -86,9 +88,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_content_main).getChildFragmentManager().getFragments().get(0);
-                if(currFrag instanceof FirstFragment){
+                if (currFrag instanceof FirstFragment) {
                     connectInfoDialog.show();
-                }else if(currFrag instanceof SecondFragment){
+                } else if (currFrag instanceof SecondFragment) {
                     dataInfoDialog.show();
                 }
             }
@@ -167,6 +169,33 @@ public class MainActivity extends AppCompatActivity {
 
     public void setSecondFragment(SecondFragment secondFragment) {
         this.secondFragment = secondFragment;
+    }
+
+    @Override
+    public void onBackPressed() {
+        System.out.println("Inside back pressed");
+        Fragment newCurrentFragment  = getVisibleFragment();
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (!fragments.isEmpty()) {
+            System.out.println("Inside the backstack not null");
+            Fragment currentFragment = fragments.get(fragments.size() - 1);
+            System.out.println(currentFragment);
+            if (newCurrentFragment instanceof SecondFragment) {
+                firstFragment.disconnectFromSecond();
+                System.out.println("Inside the second fragment back");
+            }
+        }
+        super.onBackPressed();
+    }
+
+    private Fragment getVisibleFragment() {
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment.isVisible()) {
+                return fragment;
+            }
+        }
+        return null;
     }
 }
 

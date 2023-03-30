@@ -233,6 +233,13 @@ public class FirstFragment extends Fragment {
         forecastGatt.writeCharacteristic(characteristic);
     }
 
+    @SuppressLint("MissingPermission")
+    public void disconnectFromSecond(){
+        forecastGatt.disconnect();
+        forecastGatt.close();
+        forecastGatt = null;
+    }
+
     public ForecastScanner getForecastDevice() {
         return forecastDevice;
     }

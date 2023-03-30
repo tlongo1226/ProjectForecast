@@ -1,5 +1,6 @@
 package com.example.projectforcast;
 
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,10 +19,11 @@ import com.example.projectforcast.databinding.FragmentSecondBinding;
 
 import java.util.UUID;
 
-public class SecondFragment extends Fragment {
+public class SecondFragment extends Fragment implements OnBackPressedListener {
 
     private FragmentSecondBinding binding;
     private ForecastScanner scanner;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -110,4 +112,9 @@ public class SecondFragment extends Fragment {
         binding = null;
     }
 
+    @Override
+    public boolean onBackPressed() {
+
+        return true;
+    }
 }
