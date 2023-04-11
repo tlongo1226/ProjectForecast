@@ -44,6 +44,9 @@ public class SecondFragment extends Fragment {
             binding.pressureLayout.setSelected(compoundButton.isChecked());
         });
 
+        //TODO: this needs to have a button to send data
+
+
         return binding.getRoot();
 
     }

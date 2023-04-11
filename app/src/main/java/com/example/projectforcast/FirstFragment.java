@@ -116,7 +116,7 @@ public class FirstFragment extends Fragment {
             if(newState == BluetoothProfile.STATE_CONNECTED){
                 System.out.println("Connected");
                 forecastGatt = gatt;
-                availDeviceAdapter.updateConnection(forecastDevice);
+//                availDeviceAdapter.updateConnection(forecastDevice);
                 gatt.discoverServices();
             }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 forecastDevice=null;
@@ -182,7 +182,6 @@ public class FirstFragment extends Fragment {
                             }
                         }
                     }
-
                 }
             }
         }
@@ -235,7 +234,19 @@ public class FirstFragment extends Fragment {
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
             super.onCharacteristicChanged(gatt, characteristic);
             byte[] newValue = characteristic.getValue();
+            System.out.print("New value: ");
             System.out.println(Arrays.toString(newValue));
+
+            StringBuilder builder = new StringBuilder();
+            for (byte b : newValue) {
+                builder.append((char) (b & 0xFF));
+            }
+
+            String message = builder.toString();
+            System.out.println(message);
+
+
+
 //            String newData = bytesToHex(newValue);
 //            System.out.println("ORIGINAL: "+newData);
         }
