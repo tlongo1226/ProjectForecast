@@ -48,6 +48,11 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
             binding.pressureLayout.setSelected(compoundButton.isChecked());
             ((MainActivity) getActivity()).writeParams(setParams());
         });
+
+        //TODO: this needs to have a button to send data
+
+
+
         return binding.getRoot();
     }
 

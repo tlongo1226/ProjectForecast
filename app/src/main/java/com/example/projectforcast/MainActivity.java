@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     protected BluetoothManager bluetoothManager;
     public BluetoothLeScanner bleScanner;
     BluetoothAdapter bluetoothAdapter;
+
+    public AsyncRequestThread asyncRequestThread;
     static Set<BluetoothDevice> pairedDeviceList;
     public FloatingActionButton infoButton;
     int REQUEST_ENABLE_BT = 0;
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bluetoothManager = getSystemService(BluetoothManager.class);
+
         bluetoothAdapter = bluetoothManager.getAdapter();
         if (bluetoothAdapter == null) {
             System.out.println("Device does not support Bluetooth");
