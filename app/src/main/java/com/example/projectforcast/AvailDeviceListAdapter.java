@@ -1,14 +1,12 @@
 package com.example.projectforcast;
 
-import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.projectforcast.databinding.AvailDeviceRowBinding;
@@ -19,25 +17,52 @@ import java.util.LinkedList;
 public class AvailDeviceListAdapter extends RecyclerView.Adapter {
     public LinkedList<ForecastScanner> availDevices = new LinkedList<>();
     FirstFragment parent;
+    private Handler availDevHandler;
 
     public AvailDeviceListAdapter(Context context, FirstFragment parentFragment){
         this.parent = parentFragment;
+        availDevHandler = new Handler();
     }
 
-    public void updateConnection(ForecastScanner scanner){
+    public void connectDevice(ForecastScanner scanner){
         int position = availDevices.indexOf(scanner);
         if (position >= 0) {
             availDevices.get(position).setConnected(true);
-            //notifyItemChanged(position);
+        }
 
-        }
-        int count=0;
-        while(count<availDevices.size()){
+        availDevHandler.post(() -> notifyItemChanged(position));
+
+    }
+
+    public void disconnDevice(ForecastScanner scanner){
+        int position = availDevices.indexOf(scanner);
+        int count =0;
+        while(count!=availDevices.size()){
             if(count!=position){
-                availDevices.get(position).setDisabled(true);
+                availDevices.get(count).setDisabled(false);
+                int finalCount = count;
+                availDevHandler.post(()->notifyItemChanged(finalCount));
             }
+            count++;
         }
-        notifyDataSetChanged();
+        availDevHandler.post(() -> notifyItemChanged(position));
+    }
+
+    public void reenableDev(ForecastScanner scanner){
+        int position = availDevices.indexOf(scanner);
+        int count =0;
+        System.out.println("inside reenableDev");
+        if(position>=0){
+            availDevices.get(position).setConnected(false);
+        }
+        while(count!=availDevices.size()){
+            if(count!=position){
+                availDevices.get(count).setDisabled(false);
+                int finalCount = count;
+                availDevHandler.post(()->notifyItemChanged(finalCount));
+            }
+            count++;
+        }
     }
 
     public LinkedList<ForecastScanner> getAvailDevices(){
@@ -57,15 +82,30 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
         ((AvailDeviceListHolder)holder).binding.connectAvailDev.setOnClickListener(view -> {
             try {
                 if(temp.isConnected()){
-                    ((FirstFragment)parent).disconnect();
+                    (parent).disconnect();
                     temp.setConnected(false);
+                    int count =0;
+                    while(count<availDevices.size()){
+                        if(count!=position){
+                            availDevices.get(count).setDisabled(false);
+                        }
+                        int finalCount = count;
+                        availDevHandler.post(() -> notifyItemChanged(finalCount));
+                        count++;
+                    }
                 }else{
-                    ((FirstFragment)parent).establishConn(temp);
+                    (parent).establishConn(temp);
                     ((AvailDeviceListHolder) holder).binding.connectAvailDev.setText("Connecting...");
-
+                    int count = 0;
+                    while(count<availDevices.size()){
+                        if(count!=position){
+                            availDevices.get(count).setDisabled(true);
+                        }
+                        int finalCount = count;
+                        availDevHandler.post(() -> notifyItemChanged(finalCount));
+                        count++;
+                    }
                 }
-
-
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

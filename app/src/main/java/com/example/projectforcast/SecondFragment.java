@@ -1,5 +1,7 @@
 package com.example.projectforcast;
 
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,45 +17,90 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.projectforcast.databinding.FragmentSecondBinding;
 
-public class SecondFragment extends Fragment {
+import java.util.UUID;
+
+public class SecondFragment extends Fragment implements OnBackPressedListener, ForecastGattSecondCallbackListener {
 
     private FragmentSecondBinding binding;
+    private ForecastScanner scanner;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentSecondBinding.inflate(inflater, container, false);
-
-
+        ((MainActivity) getActivity()).getForecastGattCallback().setSecondFragmentListener(this);
+        binding.setScanner(((MainActivity)getActivity()).getForecastScanner());
         binding.ambientCheck.setOnCheckedChangeListener((compoundButton, b) -> {
-            System.out.println("Ambient Check");
             binding.ambientLayout.setSelected(compoundButton.isChecked());
-            System.out.println("layoutSelected: "+binding.ambientLayout.isSelected());
-
+           ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.humidityCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.humidityLayout.setSelected(compoundButton.isChecked());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.skinCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.skinLayout.setSelected(compoundButton.isChecked());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.pressureCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.pressureLayout.setSelected(compoundButton.isChecked());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
 
         //TODO: this needs to have a button to send data
 
 
-        return binding.getRoot();
 
+        return binding.getRoot();
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+    }
+
+    public String setParams(){
+        String params ="";
+        if(binding.skinCheck.isChecked()){
+            params= params+ "1,";
+            if(((MainActivity)getActivity()).getForecastScanner().getSkinVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setSkinVal("N\\A");
+            }
+        }else{
+
+            ((MainActivity)getActivity()).getForecastScanner().setSkinVal("off");
+            params = params+"0,";
+        }
+        if(binding.ambientCheck.isChecked()){
+            params= params+ "1,";
+            if(((MainActivity)getActivity()).getForecastScanner().getAmbientVal().equals("off")) {
+                    ((MainActivity)getActivity()).getForecastScanner().setAmbientVal("N\\A");
+                }
+        }else{
+            ((MainActivity)getActivity()).getForecastScanner().setAmbientVal("off");
+            params = params+"0,";
+        }
+        if(binding.humidityCheck.isChecked()){
+            params= params+ "1,";
+            if(((MainActivity)getActivity()).getForecastScanner().getHumidityVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setHumidityVal("N\\A");
+            }
+        }else{
+            ((MainActivity)getActivity()).getForecastScanner().setHumidityVal("off");
+            params = params+"0,";
+        }
+        if(binding.pressureCheck.isChecked()){
+            params= params+ "1";
+            if(((MainActivity)getActivity()).getForecastScanner().getPressureVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setPressureVal("N\\A");
+            }
+        }else{
+            ((MainActivity)getActivity()).getForecastScanner().setPressureVal("off");
+            params = params+"0";
+        }
+        return params;
     }
 
     @Override
@@ -62,4 +109,24 @@ public class SecondFragment extends Fragment {
         binding = null;
     }
 
+    @Override
+    public boolean onBackPressed() {
+
+        return true;
+    }
+
+    @Override
+    public void onDeviceConnected() {
+
+    }
+
+    @Override
+    public void onDeviceDisconnected() {
+
+    }
+
+    @Override
+    public void onDataReceived() {
+
+    }
 }

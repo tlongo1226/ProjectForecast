@@ -3,13 +3,20 @@ package com.example.projectforcast;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 
-public class ForecastScanner {
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
+public class ForecastScanner extends BaseObservable {
     private int rssi=-1;
     private String address = "";
     private String name = "";
     private BluetoothDevice bleDev;
     private boolean connected = false;
     private boolean disabled= false;
+    private String pressureVal = "off";
+    private String humidityVal= "off";
+    private String skinVal="off";
+    private String ambientVal="off";
 
     @SuppressLint("MissingPermission")
     public ForecastScanner(BluetoothDevice newDev, int rssi){
@@ -72,5 +79,56 @@ public class ForecastScanner {
 
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
+    }
+
+
+    public String getButtonText(){
+        if(connected){
+            return "Disconnect";
+        }else{
+            return "Connect";
+        }
+    }
+
+    @Bindable
+    public String getPressureVal() {
+        return pressureVal;
+    }
+
+    public void setPressureVal(String pressureVal) {
+        this.pressureVal = pressureVal;
+        notifyPropertyChanged(BR.pressureVal);
+    }
+
+    @Bindable
+    public String getHumidityVal() {
+        return humidityVal;
+    }
+
+    public void setHumidityVal(String humidityVal) {
+
+        this.humidityVal = humidityVal;
+        notifyPropertyChanged(BR.humidityVal);
+    }
+
+    @Bindable
+    public String getSkinVal() {
+        return skinVal;
+    }
+
+    public void setSkinVal(String skinVal) {
+        this.skinVal = skinVal;
+        notifyPropertyChanged(BR.skinVal);
+    }
+
+    @Bindable
+    public String getAmbientVal() {
+        return ambientVal;
+    }
+
+    public void setAmbientVal(String ambientVal) {
+
+        this.ambientVal = ambientVal;
+        notifyPropertyChanged(BR.ambientVal);
     }
 }

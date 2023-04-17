@@ -96,6 +96,7 @@
             android:id="@+id/connectAvailDev"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:dis_en_button="@{forecastScanner.disabled}"
             android:gravity="center|center_horizontal"
             app:cornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
