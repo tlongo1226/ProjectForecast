@@ -19,7 +19,7 @@ import com.example.projectforcast.databinding.FragmentSecondBinding;
 
 import java.util.UUID;
 
-public class SecondFragment extends Fragment implements OnBackPressedListener {
+public class SecondFragment extends Fragment implements OnBackPressedListener, ForecastGattSecondCallbackListener {
 
     private FragmentSecondBinding binding;
     private ForecastScanner scanner;
@@ -29,34 +29,26 @@ public class SecondFragment extends Fragment implements OnBackPressedListener {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
-
         binding = FragmentSecondBinding.inflate(inflater, container, false);
-        ((MainActivity) getActivity()).getFirstFragment().getForecastGattCallback().setSecondBinding(binding);
-
-        binding.setScanner(((MainActivity) getActivity()).getFirstFragment().getForecastDevice());
+        ((MainActivity) getActivity()).getForecastGattCallback().setSecondFragmentListener(this);
+        binding.setScanner(((MainActivity)getActivity()).getForecastScanner());
         binding.ambientCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.ambientLayout.setSelected(compoundButton.isChecked());
-
-           ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
+           ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.humidityCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.humidityLayout.setSelected(compoundButton.isChecked());
-
-            ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.skinCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.skinLayout.setSelected(compoundButton.isChecked());
-
-            ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
         binding.pressureCheck.setOnCheckedChangeListener((compoundButton, b) -> {
             binding.pressureLayout.setSelected(compoundButton.isChecked());
-
-            ((MainActivity) getActivity()).getFirstFragment().writeParams(setParams());
+            ((MainActivity) getActivity()).writeParams(setParams());
         });
-
         return binding.getRoot();
-
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -68,39 +60,39 @@ public class SecondFragment extends Fragment implements OnBackPressedListener {
         String params ="";
         if(binding.skinCheck.isChecked()){
             params= params+ "1,";
-            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getSkinVal().equals("off")) {
-                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setSkinVal("N\\A");
+            if(((MainActivity)getActivity()).getForecastScanner().getSkinVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setSkinVal("N\\A");
             }
         }else{
 
-            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setSkinVal("off");
+            ((MainActivity)getActivity()).getForecastScanner().setSkinVal("off");
             params = params+"0,";
         }
         if(binding.ambientCheck.isChecked()){
             params= params+ "1,";
-            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getAmbientVal().equals("off")) {
-                    ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setAmbientVal("N\\A");
+            if(((MainActivity)getActivity()).getForecastScanner().getAmbientVal().equals("off")) {
+                    ((MainActivity)getActivity()).getForecastScanner().setAmbientVal("N\\A");
                 }
         }else{
-            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setAmbientVal("off");
+            ((MainActivity)getActivity()).getForecastScanner().setAmbientVal("off");
             params = params+"0,";
         }
         if(binding.humidityCheck.isChecked()){
             params= params+ "1,";
-            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getHumidityVal().equals("off")) {
-                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setHumidityVal("N\\A");
+            if(((MainActivity)getActivity()).getForecastScanner().getHumidityVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setHumidityVal("N\\A");
             }
         }else{
-            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setHumidityVal("off");
+            ((MainActivity)getActivity()).getForecastScanner().setHumidityVal("off");
             params = params+"0,";
         }
         if(binding.pressureCheck.isChecked()){
             params= params+ "1";
-            if(((MainActivity) getActivity()).getFirstFragment().getForecastDevice().getPressureVal().equals("off")) {
-                ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setPressureVal("N\\A");
+            if(((MainActivity)getActivity()).getForecastScanner().getPressureVal().equals("off")) {
+                ((MainActivity)getActivity()).getForecastScanner().setPressureVal("N\\A");
             }
         }else{
-            ((MainActivity) getActivity()).getFirstFragment().getForecastDevice().setPressureVal("off");
+            ((MainActivity)getActivity()).getForecastScanner().setPressureVal("off");
             params = params+"0";
         }
         return params;
@@ -116,5 +108,20 @@ public class SecondFragment extends Fragment implements OnBackPressedListener {
     public boolean onBackPressed() {
 
         return true;
+    }
+
+    @Override
+    public void onDeviceConnected() {
+
+    }
+
+    @Override
+    public void onDeviceDisconnected() {
+
+    }
+
+    @Override
+    public void onDataReceived() {
+
     }
 }

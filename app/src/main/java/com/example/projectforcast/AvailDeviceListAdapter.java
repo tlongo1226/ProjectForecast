@@ -82,7 +82,7 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
         ((AvailDeviceListHolder)holder).binding.connectAvailDev.setOnClickListener(view -> {
             try {
                 if(temp.isConnected()){
-                    ((FirstFragment)parent).disconnect();
+                    (parent).disconnect();
                     temp.setConnected(false);
                     int count =0;
                     while(count<availDevices.size()){
@@ -94,7 +94,7 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
                         count++;
                     }
                 }else{
-                    ((FirstFragment)parent).establishConn(temp);
+                    (parent).establishConn(temp);
                     ((AvailDeviceListHolder) holder).binding.connectAvailDev.setText("Connecting...");
                     int count = 0;
                     while(count<availDevices.size()){

@@ -20,14 +20,21 @@ import java.util.List;
 import java.util.UUID;
 
 public class ForecastGattCallback extends BluetoothGattCallback {
-    private FragmentFirstBinding firstBinding;
-    private FragmentSecondBinding secondBinding;
     private Handler callBackHandler = new Handler();
     private ForecastScanner forecastDevice;
+    private ForecastGattFirstCallbackListener firstListener;
+    private ForecastGattSecondCallbackListener secondListener;
 
-    public ForecastGattCallback(FragmentFirstBinding fBinding, ForecastScanner fScanner){
-        firstBinding = fBinding;
+    public ForecastGattCallback(ForecastScanner fScanner){
         forecastDevice = fScanner;
+    }
+
+    public void setFirstFragmentListener(ForecastGattFirstCallbackListener listener){
+        firstListener = listener;
+    }
+
+    public void setSecondFragmentListener(ForecastGattSecondCallbackListener listener){
+        secondListener = listener;
     }
 
     @Override
@@ -47,12 +54,8 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         if(newState == BluetoothProfile.STATE_CONNECTED){
             System.out.println("Connected");
 
-            ((AvailDeviceListAdapter)firstBinding.availDeviceRecycler.getAdapter()).connectDevice(forecastDevice);
             callBackHandler.post(()->{
-                //TODO set the gatt in first fragment
-
-                firstBinding.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
-                firstBinding.continueButton.setEnabled(true);
+                firstListener.onConnectConfirm(forecastDevice);
             });
             gatt.discoverServices();
         }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -190,9 +193,5 @@ public class ForecastGattCallback extends BluetoothGattCallback {
 
 //            String newData = bytesToHex(newValue);
 //            System.out.println("ORIGINAL: "+newData);
-    }
-
-    public void setSecondBinding(FragmentSecondBinding secondBinding) {
-        this.secondBinding = secondBinding;
     }
 }

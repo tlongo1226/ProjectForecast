@@ -4,6 +4,8 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Intent;
@@ -37,6 +39,8 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
+
 //<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
     DataInfoDialog dataInfoDialog;
     FirstFragment firstFragment;
     SecondFragment secondFragment;
+
+    private BluetoothGatt forecastGatt;
+    private ForecastScanner forecastScanner;
+    private ForecastGattCallback forecastGattCallback;
 
     @SuppressLint("MissingPermission")
     @Override
@@ -155,22 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-    public FirstFragment getFirstFragment() {
-        return firstFragment;
-    }
-
-    public void setFirstFragment(FirstFragment firstFragment) {
-        this.firstFragment = firstFragment;
-    }
-
-    public SecondFragment getSecondFragment() {
-        return secondFragment;
-    }
-
-    public void setSecondFragment(SecondFragment secondFragment) {
-        this.secondFragment = secondFragment;
-    }
-
     @Override
     public void onBackPressed() {
         System.out.println("Inside back pressed");
@@ -196,6 +188,40 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+
+    public BluetoothGatt getForecastGatt() {
+        return forecastGatt;
+    }
+
+    public void setForecastGatt(BluetoothGatt forecastGatt) {
+        this.forecastGatt = forecastGatt;
+    }
+
+    public ForecastScanner getForecastScanner() {
+        return forecastScanner;
+    }
+
+    @SuppressLint("MissingPermission")
+    public void setForecastScanner(ForecastScanner forecastScanner, ForecastGattFirstCallbackListener firstCallback) {
+        this.forecastScanner = forecastScanner;
+        forecastGattCallback = new ForecastGattCallback(forecastScanner);
+        forecastGattCallback.setFirstFragmentListener(firstCallback);
+        forecastGatt = forecastScanner.getBleDev().connectGatt(this, false, forecastGattCallback);
+    }
+
+    public ForecastGattCallback getForecastGattCallback() {
+        return forecastGattCallback;
+    }
+
+    @SuppressLint("MissingPermission")
+    public void writeParams(String params){
+        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        byte[] valueToWrite = params.getBytes();
+        characteristic.setValue(valueToWrite);
+        System.out.println("In writeParams before the writeChar");
+        forecastGatt.writeCharacteristic(characteristic);
     }
 }
 

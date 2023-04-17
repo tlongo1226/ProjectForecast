@@ -4,24 +4,17 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
-import android.bluetooth.BluetoothGattService;
-import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
@@ -37,23 +30,18 @@ import com.example.projectforcast.databinding.FragmentFirstBinding;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.UUID;
 
-public class FirstFragment extends Fragment {
+public class FirstFragment extends Fragment implements ForecastGattFirstCallbackListener {
     private FragmentFirstBinding binding;
     PrevDeviceListAdapter prevAdapter;
 
     private LinkedList<BluetoothDevice> pairedDeviceList = new LinkedList<>(MainActivity.getPairedDeviceList());
-    private BluetoothLeScanner forecastScanner;
-    private ForecastScanner forecastDevice;
     private AvailDeviceListAdapter availDeviceAdapter;
     private ForecastGattCallback forecastGattCallback;
-    private BluetoothGatt forecastGatt;
     BluetoothSocket forecastSocket;
     OutputStream outputStream;
     InputStream inputStream;
@@ -114,13 +102,13 @@ public class FirstFragment extends Fragment {
         binding = FragmentFirstBinding.inflate(inflater, container, false);
         availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
         prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList, this);
-        forecastScanner = ((MainActivity) getActivity()).getBleScanner();
-        ((MainActivity) getActivity()).setFirstFragment(this);
+
         binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
         binding.prevDeviceRecycler.setAdapter(prevAdapter);
         binding.scanStateButton.setOnClickListener(view -> {
             scanDevice();
         });
+        
         binding.continueButton.setEnabled(false);
         binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
         binding.continueButton.setOnClickListener(v->{
@@ -146,10 +134,10 @@ public class FirstFragment extends Fragment {
 
     @SuppressLint("MissingPermission")
     void sendData() throws IOException{
-        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        BluetoothGattCharacteristic characteristic = ((MainActivity)getActivity()).getForecastGatt().getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
         byte[] valueToWrite = "Hello, ESP32!".getBytes();
         characteristic.setValue(valueToWrite);
-        forecastGatt.writeCharacteristic(characteristic);
+        ((MainActivity)getActivity()).getForecastGatt().writeCharacteristic(characteristic);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -177,7 +165,7 @@ public class FirstFragment extends Fragment {
             binding.scanStateButton.setText("Scan\nIn Progress");
             scanHandler.postDelayed(() -> {
                 scanning = false;
-                forecastScanner.stopScan(forecastCallback);
+                ((MainActivity) getActivity()).getBleScanner().stopScan(forecastCallback);
                 if(binding!=null) {
                     binding.scanStateButton.setText("Start\nScan");
                 }
@@ -186,25 +174,24 @@ public class FirstFragment extends Fragment {
             scanning = true;
             availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
             binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
-            forecastScanner.startScan(forecastCallback);
+            ((MainActivity) getActivity()).getBleScanner().startScan(forecastCallback);
         } else {
             scanning = false;
             binding.scanStateButton.setText("Start\nScan");
-            forecastScanner.stopScan(forecastCallback);
+            ((MainActivity) getActivity()).getBleScanner().stopScan(forecastCallback);
         }
     }
 
     @SuppressLint("MissingPermission")
     public void establishConn(ForecastScanner desiredDev) throws IOException {
         System.out.println("Inside the establishConn");
-        forecastDevice = desiredDev;
-        forecastGattCallback = new ForecastGattCallback(binding,desiredDev);
-        forecastGatt = desiredDev.getBleDev().connectGatt(this.getContext(), false, forecastGattCallback);
+        ((MainActivity)getActivity()).setForecastScanner(desiredDev, this);
+
     }
 
     @SuppressLint("MissingPermission")
     public void disconnect(){
-        forecastGatt.disconnect();
+        ((MainActivity)getActivity()).getForecastGatt().disconnect();
     }
 
     @BindingAdapter("app:dis_en_button")
@@ -216,35 +203,54 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    public void setForecastGatt(BluetoothGatt forecastGatt) {
-        this.forecastGatt = forecastGatt;
-    }
 
-    public ForecastGattCallback getForecastGattCallback() {
-        return forecastGattCallback;
-    }
-
+    //TODO
+    //  - move to second and access gatt in the main
+    //  - delete
     @SuppressLint({"MissingPermission", "NewApi"})
     public void writeParams(String params){
-        BluetoothGattCharacteristic characteristic = forecastGatt.getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
+        BluetoothGattCharacteristic characteristic = ((MainActivity)getActivity()).getForecastGatt().getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
         byte[] valueToWrite = params.getBytes();
         characteristic.setValue(valueToWrite);
         System.out.println("In writeParams before the writeChar");
-        forecastGatt.writeCharacteristic(characteristic);
+        ((MainActivity)getActivity()).getForecastGatt().writeCharacteristic(characteristic);
+    }
+
+
+
+
+    @Override
+    public void onDeviceConnected() {
+
+    }
+
+    //TODO DELETE
+    @SuppressLint("MissingPermission")
+    public void disconnectFromSecond(){
+        ((MainActivity)getActivity()).getForecastGatt().disconnect();
+        ((MainActivity)getActivity()).getForecastGatt().close();
+        ((MainActivity)getActivity()).setForecastGatt(null);
+    }
+
+    @Override
+    public void onDeviceDisconnected() {
+        ((MainActivity)getActivity()).setForecastGatt(null);
     }
 
     @SuppressLint("MissingPermission")
-    public void disconnectFromSecond(){
-        forecastGatt.disconnect();
-        forecastGatt.close();
-        forecastGatt = null;
+    @Override
+    public void onConnectInit(ForecastScanner desiredDev, int position) {
+        System.out.println("Inside the onConnectInit");
+
+        ((MainActivity)getActivity()).setForecastScanner(desiredDev, this);
     }
 
-    public ForecastScanner getForecastDevice() {
-        return forecastDevice;
+    @Override
+    public void onConnectConfirm(ForecastScanner scanner){
+        availDeviceAdapter.connectDevice(((MainActivity)getActivity()).getForecastScanner());
+        binding.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
+        binding.continueButton.setEnabled(true);
     }
 
-    public void setForecastDevice(ForecastScanner forecastDevice) {
-        this.forecastDevice = forecastDevice;
-    }
+
 }
