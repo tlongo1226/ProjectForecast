@@ -49,12 +49,28 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
             ((MainActivity) getActivity()).writeParams(setParams());
         });
 
-        //TODO: this needs to have a button to send data
+        binding.animalscheckBox.setOnClickListener(view -> { //TODO check for funerary operator here
+            binding.sowNameSpinner.setVisibility(View.VISIBLE);
+            binding.animalscheckBox.isChecked();
+        });
 
+        binding.sendButton.setOnClickListener(view -> {
+            AsyncRequestThread asyncRequestThread = new AsyncRequestThread(this.getContext());
+            String roomID = binding.roomNameSpinner.getSelectedItem().toString();
+            String sowID = binding.sowNameSpinner.getSelectedItem().toString(); // todo add check for if it is an animal
+            String a = binding.currAmbVal.getText().toString();
+            String s = binding.currSkinVal.getText().toString();
+            String p = binding.currPressureVal.getText().toString();
+            String h = binding.currHumidityVal.getText().toString();
+            asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|0|"+roomID+"|"+sowID+"|"+a+"|"+s+"|"+p+"|"+h+"|");
+
+        });
 
 
         return binding.getRoot();
     }
+    public void setValues(String roomID, String sowID, String a, String s, String p, String h){
+      }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

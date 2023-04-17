@@ -190,7 +190,6 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         System.out.println(message);
 
 
-
 //            String newData = bytesToHex(newValue);
 //            System.out.println("ORIGINAL: "+newData);
     }

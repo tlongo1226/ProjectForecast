@@ -346,20 +346,39 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Under\nConstruction"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="34sp"
-            android:textStyle="bold"
-
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
             app:layout_constraintEnd_toEndOf="@+id/locationGroup"
             app:layout_constraintStart_toStartOf="@+id/locationGroup"
-            app:layout_constraintTop_toTopOf="@+id/locationGroup" />
+            app:layout_constraintTop_toTopOf="@+id/locationGroup">
+
+            <Spinner
+                android:id="@+id/roomNameSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <CheckBox
+                android:id="@+id/animalscheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Is Animal?" />
+
+            <Spinner
+                android:id="@+id/sowNameSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/sendButton"
+                android:layout_width="match_parent"
+                android:layout_height="66dp"
+                android:background="@drawable/title_background"
+                android:text="Send" />
+        </LinearLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
