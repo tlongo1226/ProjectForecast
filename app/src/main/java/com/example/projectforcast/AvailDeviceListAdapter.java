@@ -34,40 +34,6 @@ public class AvailDeviceListAdapter extends RecyclerView.Adapter {
 
     }
 
-    public void disconnDevice(ForecastScanner scanner){
-        int position = availDevices.indexOf(scanner);
-        int count =0;
-        while(count!=availDevices.size()){
-            if(count!=position){
-                availDevices.get(count).setDisabled(false);
-                int finalCount = count;
-                availDevHandler.post(()->notifyItemChanged(finalCount));
-            }
-            count++;
-        }
-        availDevHandler.post(() -> notifyItemChanged(position));
-    }
-
-    public void reenableDev(ForecastScanner scanner){
-        int position = availDevices.indexOf(scanner);
-        int count =0;
-        System.out.println("inside reenableDev");
-        if(position>=0){
-            availDevices.get(position).setConnected(false);
-        }
-        while(count!=availDevices.size()){
-            if(count!=position){
-                availDevices.get(count).setDisabled(false);
-                int finalCount = count;
-                availDevHandler.post(()->notifyItemChanged(finalCount));
-            }
-            count++;
-        }
-    }
-
-    public LinkedList<ForecastScanner> getAvailDevices(){
-        return availDevices;
-    }
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

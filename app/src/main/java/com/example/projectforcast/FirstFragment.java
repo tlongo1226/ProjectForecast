@@ -218,8 +218,6 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
     }
 
 
-
-
     @Override
     public void onDeviceConnected() {
 

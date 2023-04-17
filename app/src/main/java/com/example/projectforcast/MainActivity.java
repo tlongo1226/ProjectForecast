@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         bluetoothManager = getSystemService(BluetoothManager.class);
 
         bluetoothAdapter = bluetoothManager.getAdapter();
+        asyncRequestThread = new AsyncRequestThread(this);
+        asyncRequestThread.updatePhpArgumentsAndRunThread("FarmID|","1|");
         if (bluetoothAdapter == null) {
             System.out.println("Device does not support Bluetooth");
         } else {
