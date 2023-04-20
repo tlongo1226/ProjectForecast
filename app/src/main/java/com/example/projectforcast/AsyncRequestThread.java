@@ -103,7 +103,8 @@ public class AsyncRequestThread extends Thread {
 
         }
         else if(responseJson.has("SowList")){
-            //TODO: Set spinners in second fragment
+            // TODO: Set spinners in second fragment
+            
         }
         else{
             Toast.makeText(context, "PHP Error", Toast.LENGTH_SHORT).show();
