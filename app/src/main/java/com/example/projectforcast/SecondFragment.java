@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.projectforcast.databinding.FragmentSecondBinding;
 
+import java.util.List;
 import java.util.UUID;
 
 public class SecondFragment extends Fragment implements OnBackPressedListener, ForecastGattSecondCallbackListener {
@@ -52,6 +55,22 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
         //TODO: this needs to have a button to send data
 
 
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.sows, android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinner.setAdapter(adapter);
+        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
         return binding.getRoot();
     }

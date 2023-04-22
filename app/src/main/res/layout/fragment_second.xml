@@ -6,7 +6,7 @@
     <data>
         <variable
             name="scanner"
-            type="com.example.projectforcast.ForecastScanner" />
+            type="com.example.projectforcast.ForecastScanner"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,11 +19,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/title_background"
+            android:background="@drawable/title_background_v2"
             android:paddingHorizontal="20dp"
             android:paddingVertical="16dp"
-            android:text="New Measurement Page"
-            android:textColor="@color/white"
+            android:text="&quot;Project Forecast&quot;"
+            android:textColor="@color/black"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -94,6 +94,7 @@
             android:padding="10dp"
             android:text="Pressure"
 
+            android:textColor="@color/white"
             android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/humidityCheck"
             app:layout_constraintEnd_toEndOf="@+id/paramGroup"
@@ -115,6 +116,7 @@
             android:drawableTint="@color/white"
             android:padding="10dp"
             android:text="Humidity"
+            android:textColor="@color/white"
             android:textSize="34sp"
             app:layout_constraintBottom_toTopOf="@+id/skinCheck"
             app:layout_constraintEnd_toEndOf="@+id/paramGroup"
@@ -131,6 +133,7 @@
             android:buttonTint="@color/white"
             android:padding="10dp"
             android:text="Skin"
+            android:textColor="@color/white"
             android:textSize="34sp"
             app:layout_constraintBottom_toBottomOf="@+id/paramGroup"
             app:layout_constraintEnd_toStartOf="@+id/ambientCheck"
@@ -145,10 +148,12 @@
             android:layout_weight="1"
             android:background="@drawable/title_background"
             android:button="@null"
+            android:buttonTint="#EC782A"
             android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
             android:drawableTint="@color/white"
             android:padding="10dp"
             android:text="Ambient"
+            android:textColor="@color/white"
             android:textSize="34sp"
             app:layout_constraintEnd_toEndOf="@+id/paramGroup"
             app:layout_constraintHorizontal_bias="0.5"
@@ -348,18 +353,58 @@
 
         <TextView
             android:id="@+id/textView4"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Under\nConstruction"
-            android:textAlignment="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/title_background"
+            android:gravity="center"
+            android:text="Farm: Farrpro Test"
             android:textColor="@color/black"
-            android:textSize="34sp"
+            android:textSize="40dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/spinner"
+            app:layout_constraintEnd_toEndOf="@+id/locationGroup"
+            app:layout_constraintStart_toStartOf="@+id/locationGroup"
+            app:layout_constraintTop_toTopOf="@+id/locationGroup"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/title_background"
+            android:dropDownWidth="match_parent"
+            android:gravity="center"
+            android:prompt="@string/spinnerPrompt"
+            android:spinnerMode="dropdown"
+            android:textAlignment="textStart"
+            android:textSize="32sp"
+            app:layout_constraintBottom_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="@+id/locationGroup"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/locationGroup"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:autoSizeTextType="uniform"
+            android:backgroundTint="#EC782A"
+            android:text="Confirm"
+            app:cornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="@+id/locationGroup"
             app:layout_constraintEnd_toEndOf="@+id/locationGroup"
             app:layout_constraintStart_toStartOf="@+id/locationGroup"
-            app:layout_constraintTop_toTopOf="@+id/locationGroup" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

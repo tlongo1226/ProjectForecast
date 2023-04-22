@@ -98,6 +98,7 @@
             android:layout_height="wrap_content"
             app:dis_en_button="@{forecastScanner.disabled}"
             android:gravity="center|center_horizontal"
+            android:text="@{forecastScanner.buttonText}"
             app:cornerRadius="15dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
