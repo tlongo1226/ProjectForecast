@@ -44,6 +44,7 @@ import java.util.UUID;
 //<a href="https://www.flaticon.com/free-icons/information" title="information icons">Information icons created by Freepik - Flaticon</a>
 public class MainActivity extends AppCompatActivity {
 
+
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     protected BluetoothManager bluetoothManager;
@@ -63,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
     private ForecastScanner forecastScanner;
     private ForecastGattCallback forecastGattCallback;
 
+    public static String username = "farrpro";
+    public static String password = "pass";
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
 
         bluetoothAdapter = bluetoothManager.getAdapter();
         asyncRequestThread = new AsyncRequestThread(this);
-        asyncRequestThread.updatePhpArgumentsAndRunThread("FarmID|","1|");
+        asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|", username + "|" + password + "|0|");
+
         if (bluetoothAdapter == null) {
             System.out.println("Device does not support Bluetooth");
         } else {
@@ -207,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
     public ForecastScanner getForecastScanner() {
         return forecastScanner;
     }
+
 
     @SuppressLint("MissingPermission")
     public void setForecastScanner(ForecastScanner forecastScanner, ForecastGattFirstCallbackListener firstCallback) {

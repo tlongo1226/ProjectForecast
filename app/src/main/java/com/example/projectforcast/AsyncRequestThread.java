@@ -89,13 +89,25 @@ public class AsyncRequestThread extends Thread {
         }
         System.out.println("Async Lock Unlocked");
         if(responseJson.has("Success") ){
-            Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show();
+            try {
+                if(responseJson.getBoolean("Success")){
+                    Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(context, "Data Not Added", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Toast.makeText(context, "Runtime Error", Toast.LENGTH_SHORT).show();
+                throw new RuntimeException(e);
+            }
+
         }
-        else if(responseJson.has("FarmID")){
-            //TODO: Set spinners in second fragment
+        else if(responseJson.has("SowList")){
+            // TODO: Set spinners in second fragment
+            
         }
         else{
-            Toast.makeText(context, "Error Occurred", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "PHP Error", Toast.LENGTH_SHORT).show();
         }
 
         responseJson = null;

@@ -52,8 +52,30 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
             ((MainActivity) getActivity()).writeParams(setParams());
         });
 
-        //TODO: this needs to have a button to send data
+        binding.animalscheckBox.setOnClickListener(view -> {
+            if(binding.animalscheckBox.isChecked()){
+                binding.sowNameSpinner.setVisibility(View.VISIBLE);
+            }
+            else{
+                binding.sowNameSpinner.setVisibility(View.INVISIBLE);
+            }
 
+        });
+
+        binding.sendButton.setOnClickListener(view -> {
+            AsyncRequestThread asyncRequestThread = new AsyncRequestThread(this.getContext());
+            String roomID = binding.roomNameSpinner.getSelectedItem().toString();
+            String sowID = "N/A";
+            if(binding.animalscheckBox.isChecked()){
+                sowID = binding.sowNameSpinner.getSelectedItem().toString();
+            }
+            String a = binding.currAmbVal.getText().toString();
+            String s = binding.currSkinVal.getText().toString();
+            String p = binding.currPressureVal.getText().toString();
+            String h = binding.currHumidityVal.getText().toString();
+            asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|0|"+roomID+"|"+sowID+"|"+a+"|"+s+"|"+p+"|"+h+"|");
+
+        });
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.sows, android.R.layout.simple_spinner_item);
 
@@ -74,6 +96,8 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
 
         return binding.getRoot();
     }
+    public void setValues(String roomID, String sowID, String a, String s, String p, String h){
+      }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
