@@ -52,23 +52,14 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
             ((MainActivity) getActivity()).writeParams(setParams());
         });
 
-        binding.animalscheckBox.setOnClickListener(view -> {
-            if(binding.animalscheckBox.isChecked()){
-                binding.sowNameSpinner.setVisibility(View.VISIBLE);
-            }
-            else{
-                binding.sowNameSpinner.setVisibility(View.INVISIBLE);
-            }
 
-        });
 
-        binding.sendButton.setOnClickListener(view -> {
+        binding.confirmButton.setOnClickListener(view -> {
             AsyncRequestThread asyncRequestThread = new AsyncRequestThread(this.getContext());
-            String roomID = binding.roomNameSpinner.getSelectedItem().toString();
+//            String roomID = binding.roomNameSpinner.getSelectedItem().toString(); //TODO this should just be hard coded
+            String roomID = "FarrproTest";
             String sowID = "N/A";
-            if(binding.animalscheckBox.isChecked()){
-                sowID = binding.sowNameSpinner.getSelectedItem().toString();
-            }
+            sowID = binding.animalSpinner.getSelectedItem().toString();
             String a = binding.currAmbVal.getText().toString();
             String s = binding.currSkinVal.getText().toString();
             String p = binding.currPressureVal.getText().toString();
@@ -80,8 +71,8 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(), R.array.sows, android.R.layout.simple_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinner.setAdapter(adapter);
-        binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        binding.animalSpinner.setAdapter(adapter);
+        binding.animalSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {

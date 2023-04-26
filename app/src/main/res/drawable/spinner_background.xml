@@ -1,9 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:gravity="end">
-        <bitmap android:src="@drawable/down_chevron_svgrepo_com" android:tint="@android:color/white" android:gravity="center_vertical|end" android:padding="8dp" />
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="#EC782A" />
+        </shape>
     </item>
-    <item android:gravity="start">
-        <bitmap android:src="@android:color/transparent" android:gravity="center_vertical|start" android:padding="8dp" />
-    </item>
+    <item
+        android:drawable="@drawable/down_chevron_svgrepo_com"
+        android:gravity="center_vertical|end"
+        android:width="32dp"
+        android:height="32dp"
+        android:paddingEnd="24dp" />
 </layer-list>
