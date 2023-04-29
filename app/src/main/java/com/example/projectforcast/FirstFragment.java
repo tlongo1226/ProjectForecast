@@ -26,6 +26,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 
 import com.example.projectforcast.databinding.FragmentFirstBinding;
+import com.example.projectforcast.databinding.FragmentFirstV2Binding;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,10 +39,9 @@ import java.util.UUID;
 public class FirstFragment extends Fragment implements ForecastGattFirstCallbackListener {
     private FragmentFirstBinding binding;
     PrevDeviceListAdapter prevAdapter;
-
+    private FragmentFirstV2Binding bindingV2;
     private LinkedList<BluetoothDevice> pairedDeviceList = new LinkedList<>(MainActivity.getPairedDeviceList());
     private AvailDeviceListAdapter availDeviceAdapter;
-    private ForecastGattCallback forecastGattCallback;
     BluetoothSocket forecastSocket;
     OutputStream outputStream;
     InputStream inputStream;
@@ -71,16 +71,19 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
             super.onScanResult(callbackType, result);
             //TODO remove scans for duplicates
             BluetoothDevice newDev = result.getDevice();
+            String devName = newDev.getName();
             if(!devAddresses.contains(newDev.getAddress())) {
-                ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
-                availDeviceAdapter.addForecastDevice(newScanner);
-                availDeviceAdapter.notifyDataSetChanged();
-                devAddresses.add(newDev.getAddress());
+                if(devName!= null && devName.contains("Forecast")) {
+                    System.out.println("This is a forecast Device");
+
+                    ForecastScanner newScanner = new ForecastScanner(result.getDevice(), result.getRssi());
+                    availDeviceAdapter.addForecastDevice(newScanner);
+                    availDeviceAdapter.notifyDataSetChanged();
+                    devAddresses.add(newDev.getAddress());
+                }
             }
         }
     };
-
-
 
     final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
     final String bytesToHex(byte[] bytes) {
@@ -99,42 +102,37 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
+        bindingV2 = FragmentFirstV2Binding.inflate(inflater, container, false);
         binding = FragmentFirstBinding.inflate(inflater, container, false);
-        availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
-        prevAdapter = new PrevDeviceListAdapter(binding.getRoot().getContext(), pairedDeviceList, this);
-
-        binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
-        binding.prevDeviceRecycler.setAdapter(prevAdapter);
-        binding.scanStateButton.setOnClickListener(view -> {
+        availDeviceAdapter = new AvailDeviceListAdapter(bindingV2.getRoot().getContext(), this);
+        bindingV2.availDeviceRecycler.setAdapter(availDeviceAdapter);
+        bindingV2.scanStateButton.setOnClickListener(view -> {
             scanDevice();
         });
         
-        binding.continueButton.setEnabled(false);
-        binding.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
-        binding.continueButton.setOnClickListener(v->{
+        bindingV2.continueButton.setEnabled(false);
+        bindingV2.continueButton.setBackgroundColor(Color.parseColor("#FF7A7A7A"));
+        bindingV2.continueButton.setOnClickListener(v->{
+            ((MainActivity)getActivity()).getBleScanner().stopScan(forecastCallback);
             NavHostFragment.findNavController(FirstFragment.this)
                     .navigate(R.id.action_FirstFragment_to_SecondFragment);
         });
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.availDeviceRecycler.getContext(), DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(bindingV2.availDeviceRecycler.getContext(), DividerItemDecoration.VERTICAL);
         dividerItemDecoration.setDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.avail_device_spacer));
-        binding.prevDeviceRecycler.addItemDecoration(dividerItemDecoration);
-        binding.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
+        bindingV2.availDeviceRecycler.addItemDecoration(dividerItemDecoration);
 
-        binding.textView.setOnClickListener(view -> {
+        bindingV2.textView.setOnClickListener(view -> {
             try {
                 sendData();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
-
-
-        return binding.getRoot();
+        return bindingV2.getRoot();
     }
 
     @SuppressLint("MissingPermission")
     void sendData() throws IOException{
-
         BluetoothGattCharacteristic characteristic = ((MainActivity)getActivity()).getForecastGatt().getService(UUID.fromString("6e400001-b5a3-f393-e0a9-e50e24dcca9e")).getCharacteristic(UUID.fromString("6E400002-B5A3-F393-E0A9-E50E24DCCA9E"));
         byte[] valueToWrite = "Hello, ESP32!".getBytes();
         characteristic.setValue(valueToWrite);
@@ -148,7 +146,7 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        binding = null;
+        bindingV2 = null;
     }
 
     private void scanDevice() {
@@ -163,22 +161,22 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
             getActivity().requestPermissions(new String[]{Manifest.permission.BLUETOOTH_SCAN}, 1);
         }
         if (!scanning) {
-            binding.scanStateButton.setText("Scan\nIn Progress");
+            bindingV2.scanStateButton.setText("Scan In Progress");
             scanHandler.postDelayed(() -> {
                 scanning = false;
                 ((MainActivity) getActivity()).getBleScanner().stopScan(forecastCallback);
-                if(binding!=null) {
-                    binding.scanStateButton.setText("Start\nScan");
+                if(bindingV2!=null) {
+                    bindingV2.scanStateButton.setText("Start Scan");
                 }
                 devAddresses.clear();
             }, SCAN_PERIOD);
             scanning = true;
-            availDeviceAdapter = new AvailDeviceListAdapter(binding.getRoot().getContext(), this);
-            binding.availDeviceRecycler.setAdapter(availDeviceAdapter);
+            availDeviceAdapter = new AvailDeviceListAdapter(bindingV2.getRoot().getContext(), this);
+            bindingV2.availDeviceRecycler.setAdapter(availDeviceAdapter);
             ((MainActivity) getActivity()).getBleScanner().startScan(forecastCallback);
         } else {
             scanning = false;
-            binding.scanStateButton.setText("Start\nScan");
+            bindingV2.scanStateButton.setText("Start Scan");
             ((MainActivity) getActivity()).getBleScanner().stopScan(forecastCallback);
         }
     }
@@ -187,7 +185,6 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
     public void establishConn(ForecastScanner desiredDev) throws IOException {
         System.out.println("Inside the establishConn");
         ((MainActivity)getActivity()).setForecastScanner(desiredDev, this);
-
     }
 
     @SuppressLint("MissingPermission")
@@ -203,7 +200,6 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
             button.setBackgroundColor(Color.parseColor("#EC782A"));
         }
     }
-
 
     //TODO
     //  - move to second and access gatt in the main
@@ -223,6 +219,12 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
 
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     //TODO DELETE
     @SuppressLint("MissingPermission")
     public void disconnectFromSecond(){
@@ -240,15 +242,14 @@ public class FirstFragment extends Fragment implements ForecastGattFirstCallback
     @Override
     public void onConnectInit(ForecastScanner desiredDev, int position) {
         System.out.println("Inside the onConnectInit");
-
         ((MainActivity)getActivity()).setForecastScanner(desiredDev, this);
     }
 
     @Override
     public void onConnectConfirm(ForecastScanner scanner){
         availDeviceAdapter.connectDevice(((MainActivity)getActivity()).getForecastScanner());
-        binding.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
-        binding.continueButton.setEnabled(true);
+        bindingV2.continueButton.setBackgroundColor(Color.parseColor("#EC782A"));
+        bindingV2.continueButton.setEnabled(true);
     }
 
 

@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <corners android:radius="16dp" />
+            <solid android:color="#EC782A" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/down_chevron_svgrepo_com"
+        android:gravity="center_vertical|end"
+        android:width="32dp"
+        android:height="32dp"
+        android:paddingEnd="24dp" />
+</layer-list>
