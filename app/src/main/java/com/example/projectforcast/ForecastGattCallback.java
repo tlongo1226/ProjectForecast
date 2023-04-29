@@ -53,7 +53,6 @@ public class ForecastGattCallback extends BluetoothGattCallback {
         System.out.println("newState: "+newState);
         if(newState == BluetoothProfile.STATE_CONNECTED){
             System.out.println("Connected");
-            gatt.requestMtu(40);
             callBackHandler.post(()->{
                 firstListener.onConnectConfirm(forecastDevice);
             });
@@ -123,6 +122,7 @@ public class ForecastGattCallback extends BluetoothGattCallback {
                     }
                 }
             }
+            gatt.requestMtu(40);
         }
     }
 
