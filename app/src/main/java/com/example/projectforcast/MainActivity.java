@@ -11,6 +11,7 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
@@ -66,11 +68,25 @@ public class MainActivity extends AppCompatActivity {
 
     public static String username = "farrpro";
     public static String password = "pass";
+    @RequiresApi(api = Build.VERSION_CODES.S)
     @SuppressLint("MissingPermission")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bluetoothManager = getSystemService(BluetoothManager.class);
+
+        ActivityCompat.requestPermissions(this, new String[]{
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_SCAN,
+                        Manifest.permission.BLUETOOTH_CONNECT,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_BACKGROUND_LOCATION
+                }
+                , 0);
+
+
 
         bluetoothAdapter = bluetoothManager.getAdapter();
         asyncRequestThread = new AsyncRequestThread(this);
