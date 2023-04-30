@@ -122,7 +122,7 @@ public class ForecastGattCallback extends BluetoothGattCallback {
                     }
                 }
             }
-            gatt.requestMtu(40);
+            gatt.requestMtu(140);
         }
     }
 

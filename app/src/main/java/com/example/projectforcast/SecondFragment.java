@@ -64,7 +64,7 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
             String s = binding.currSkinVal.getText().toString();
             String p = binding.currPressureVal.getText().toString();
             String h = binding.currHumidityVal.getText().toString();
-            asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|0|"+roomID+"|"+sowID+"|"+a+"|"+s+"|"+p+"|"+h+"|");
+            asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|1|"+roomID+"|"+sowID+"|"+a+"|"+s+"|"+p+"|"+h+"|");
 
         });
 
