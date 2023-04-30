@@ -90,14 +90,14 @@ public class AsyncRequestThread extends Thread {
         System.out.println("Async Lock Unlocked");
         if(responseJson.has("Success") ){
             try {
-                if(responseJson.getBoolean("Success")){
-                    Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show();
+                if(responseJson.getBoolean("Success")){ //TODO fix these
+//                    Toast.makeText(context, "Data Added", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    Toast.makeText(context, "Data Not Added", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Data Not Added", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
-                Toast.makeText(context, "Runtime Error", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Runtime Error", Toast.LENGTH_SHORT).show();
                 throw new RuntimeException(e);
             }
 
@@ -107,7 +107,7 @@ public class AsyncRequestThread extends Thread {
 
         }
         else{
-            Toast.makeText(context, "PHP Error", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context, "PHP Error", Toast.LENGTH_SHORT).show();
         }
 
         responseJson = null;
