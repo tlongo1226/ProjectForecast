@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -19,14 +20,13 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.projectforcast.databinding.FragmentSecondBinding;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 public class SecondFragment extends Fragment implements OnBackPressedListener, ForecastGattSecondCallbackListener {
 
     private FragmentSecondBinding binding;
-    private ForecastScanner scanner;
-
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -59,12 +59,19 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
 //            String roomID = binding.roomNameSpinner.getSelectedItem().toString(); //TODO this should just be hard coded
             String roomID = "FarrproTest";
             String sowID = "N/A";
-            sowID = binding.animalSpinner.getSelectedItem().toString();
-            String a = binding.currAmbVal.getText().toString();
-            String s = binding.currSkinVal.getText().toString();
-            String p = binding.currPressureVal.getText().toString();
-            String h = binding.currHumidityVal.getText().toString();
-            asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|1|"+roomID+"|"+sowID+"|"+a+"|"+s+"|"+p+"|"+h+"|");
+            String amb = binding.currAmbVal.getText().toString();
+            String skin = binding.currSkinVal.getText().toString();
+            String press = binding.currPressureVal.getText().toString();
+            String humid = binding.currHumidityVal.getText().toString();
+
+            if(!binding.animalSpinner.getSelectedItem().toString().equals("Select an Animal") && (!(amb.equals("off") || amb.equals("N\\A"))|| !(skin.equals("off") || skin.equals("N\\A")) || !(press.equals("off") || press.equals("N\\A")) || !(humid.equals("off") || humid.equals("N\\A")))){
+                sowID = binding.animalSpinner.getSelectedItem().toString();
+
+                asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|0|"+roomID+"|"+sowID+"|"+amb+"|"+skin+"|"+press+"|"+humid+"|");
+            }else{
+                Toast.makeText(this.getContext(), "Please Select an Animal or Record a Measurement", Toast.LENGTH_SHORT).show();
+            }
+
 
         });
 
@@ -76,7 +83,12 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
 
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                System.out.println("Selected item: "+adapterView.getSelectedItem().toString());
+                System.out.println("Position at index: "+adapterView.getItemAtPosition(i));
+                if(!adapterView.getSelectedItem().toString().equals("Select an Animal")){
+                    System.out.println(adapterView.getSelectedItem().toString());
+                    //Todo change the animal selected
+                }
             }
 
             @Override
