@@ -12,10 +12,8 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string-array name="sows">
         <item>Select an Animal</item>
-        <item>Sow A</item>
         <item>Charlotte</item>
-        <item>Bacon</item>
-        <item>Sow D</item>
+        <item>Pork Chop</item>
         <item>Chris P. Bacon</item>
     </string-array>
 </resources>

@@ -66,7 +66,7 @@ public class SecondFragment extends Fragment implements OnBackPressedListener, F
 
             if(!binding.animalSpinner.getSelectedItem().toString().equals("Select an Animal") && (!(amb.equals("off") || amb.equals("N\\A"))|| !(skin.equals("off") || skin.equals("N\\A")) || !(press.equals("off") || press.equals("N\\A")) || !(humid.equals("off") || humid.equals("N\\A")))){
                 sowID = binding.animalSpinner.getSelectedItem().toString();
-
+                System.out.println("Before making php call");
                 asyncRequestThread.updatePhpArgumentsAndRunThread("username|password|call|room|sow|a|s|p|h|", MainActivity.username + "|" + MainActivity.password + "|0|"+roomID+"|"+sowID+"|"+amb+"|"+skin+"|"+press+"|"+humid+"|");
             }else{
                 Toast.makeText(this.getContext(), "Please Select an Animal or Record a Measurement", Toast.LENGTH_SHORT).show();
