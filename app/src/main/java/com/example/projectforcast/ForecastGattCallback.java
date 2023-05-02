@@ -56,7 +56,8 @@ public class ForecastGattCallback extends BluetoothGattCallback {
             callBackHandler.post(()->{
                 firstListener.onConnectConfirm(forecastDevice);
             });
-            gatt.discoverServices();
+            gatt.requestMtu(140);
+
         }else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
             forecastDevice=null;
             System.out.println("Disconnected");
@@ -71,6 +72,7 @@ public class ForecastGattCallback extends BluetoothGattCallback {
                 System.out.println("Error status: " + status + " specifics unknown - " + gatt.getDevice().getAddress());
             }
         }
+
     }
 
     @SuppressLint("MissingPermission")
@@ -129,6 +131,9 @@ public class ForecastGattCallback extends BluetoothGattCallback {
     @Override
     public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
         super.onMtuChanged(gatt, mtu, status);
+        System.out.println("Status: " + status);
+        System.out.println("Mtu: "+mtu);
+        gatt.discoverServices();
     }
 
 
@@ -174,6 +179,7 @@ public class ForecastGattCallback extends BluetoothGattCallback {
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         super.onCharacteristicChanged(gatt, characteristic);
         byte[] newValue = characteristic.getValue();
+        System.out.println("Bytes: "+ Arrays.toString(newValue));
         System.out.print("New value: ");
 //        System.out.println(Arrays.toString(newValue));
         StringBuilder builder = new StringBuilder();
